@@ -62,7 +62,7 @@
     <Folder Include="Tables" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Tables\Event.sql" />
-    <Build Include="Tables\Host.sql" />
+    <None Include="Tables\Event.sql" />
+    <None Include="Tables\Host.sql" />
   </ItemGroup>
 </Project>
