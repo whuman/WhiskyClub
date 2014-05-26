@@ -3,7 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using WhiskyClub.DataAccess.Entities;
 
-namespace WhiskyClub.DataAccess.Reposistories
+namespace WhiskyClub.DataAccess.Repositories
 {
     public abstract class EntityFrameworkRepositoryBase : IDisposable
     {

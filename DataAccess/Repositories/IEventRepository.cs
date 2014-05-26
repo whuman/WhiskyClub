@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using WhiskyClub.DataAccess.Models;
 
-namespace WhiskyClub.DataAccess.Reposistories
+namespace WhiskyClub.DataAccess.Repositories
 {
     public interface IEventRepository : IDisposable
     {
         Event GetEvent(int eventId);
 
-        IList<Event> GetAllEvents();
+        List<Event> GetAllEvents();
     }
 }

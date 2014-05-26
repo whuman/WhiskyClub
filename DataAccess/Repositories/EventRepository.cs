@@ -2,7 +2,7 @@
 using System.Linq;
 using WhiskyClub.DataAccess.Entities;
 
-namespace WhiskyClub.DataAccess.Reposistories
+namespace WhiskyClub.DataAccess.Repositories
 {
     public class EventRepository : EntityFrameworkRepositoryBase, IEventRepository
     {
@@ -19,7 +19,7 @@ namespace WhiskyClub.DataAccess.Reposistories
                        };
         }
 
-        public IList<Models.Event> GetAllEvents()
+        public List<Models.Event> GetAllEvents()
         {
             var eventItems = from e in GetAll<Event>()
                              select new Models.Event
