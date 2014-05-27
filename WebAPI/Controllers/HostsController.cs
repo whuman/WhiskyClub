@@ -12,10 +12,12 @@ namespace WhiskyClub.WebAPI.Controllers
     public class HostsController : ApiController
     {
         public IHostRepository HostRepository { get; set; }
-        
-        public HostsController()
+
+        public HostsController() : this(new HostRepository()) { }
+
+        public HostsController(IHostRepository hostRepository)
         {
-            HostRepository = new HostRepository();
+            HostRepository = hostRepository;
         }
 
         // GET api/<controller>

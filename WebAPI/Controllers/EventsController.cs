@@ -16,10 +16,12 @@ namespace WhiskyClub.WebAPI.Controllers
         public IEventRepository EventRepository { get; set; }
         public IHostRepository HostRepository { get; set; }
 
-        public EventsController()
+        public EventsController() : this(new EventRepository(), new HostRepository()) { }
+
+        public EventsController(IEventRepository eventRepository, IHostRepository hostsRepository)
         {
-            EventRepository = new EventRepository();
-            HostRepository = new HostRepository();
+            EventRepository = eventRepository;
+            HostRepository = hostsRepository;
         }
 
         public IHttpActionResult Get()
