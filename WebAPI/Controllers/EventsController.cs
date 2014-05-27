@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Web.Http;
 using WhiskyClub.DataAccess.Repositories;
 using WhiskyClub.WebAPI.Models;
@@ -19,9 +21,8 @@ namespace WhiskyClub.WebAPI.Controllers
             EventRepository = new EventRepository();
             HostRepository = new HostRepository();
         }
-
-        // GET api/<controller>
-        public IEnumerable<Event> Get()
+                
+        public HttpResponseMessage Get()
         {
             var events = from e in EventRepository.GetAllEvents()
                          orderby e.HostedDate descending
@@ -32,7 +33,10 @@ namespace WhiskyClub.WebAPI.Controllers
                                         HostedDate = e.HostedDate
                                     };
 
-            return events.ToList();
+            // Write the list to the response body.
+            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, events);
+            
+            return response;
         }
 
         // GET api/<controller>/5
