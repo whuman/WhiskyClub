@@ -17,6 +17,11 @@ namespace WhiskyClub.WebAPI.Controllers
 
         public HostsController(IHostRepository hostRepository)
         {
+            if (hostRepository == null)
+            {
+                throw new ArgumentNullException("hostRepository");
+            }
+            
             HostRepository = hostRepository;
         }
 

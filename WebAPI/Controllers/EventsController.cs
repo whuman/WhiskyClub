@@ -20,6 +20,16 @@ namespace WhiskyClub.WebAPI.Controllers
 
         public EventsController(IEventRepository eventRepository, IHostRepository hostsRepository)
         {
+            if (eventRepository == null)
+            {
+                throw new ArgumentNullException("eventRepository");
+            }
+
+            if (hostsRepository == null)
+            {
+                throw new ArgumentNullException("hostsRepository");
+            }            
+            
             EventRepository = eventRepository;
             HostRepository = hostsRepository;
         }
