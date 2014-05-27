@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace WhiskyClub.WebAPI.Tests
 {
     [TestClass]
-    public class UnitTest1
+    public class HostControllerTests
     {
         [TestMethod]
         public void TestMethod1()
