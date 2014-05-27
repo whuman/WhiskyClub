@@ -11,19 +11,20 @@ namespace WhiskyClub.WebAPI.Controllers
 {
     public class EventsController : ApiController
     {
-        private IEventRepository _eventRepo;
-        private IHostRepository _hostRepo;
+        public IEventRepository EventRepository { get; set; }
+        public IHostRepository HostRepository { get; set; }
 
         public EventsController()
         {
-            _eventRepo = new EventRepository();
-            _hostRepo = new HostRepository();
+            EventRepository = new EventRepository();
+            HostRepository = new HostRepository();
         }
 
         // GET api/<controller>
         public IEnumerable<Event> Get()
         {
-            var events = from e in _eventRepo.GetAllEvents()
+            var events = from e in EventRepository.GetAllEvents()
+                         orderby e.HostedDate descending
                          select new Event
                                     {
                                         EventId = e.EventId,
@@ -39,19 +40,19 @@ namespace WhiskyClub.WebAPI.Controllers
         {
             try
             {
-                var dalEvent = _eventRepo.GetEvent(id);
+                var eventModel = EventRepository.GetEvent(id);
                 var item = new Event
                                {
-                                   EventId = dalEvent.EventId,
-                                   Description = dalEvent.Description,
-                                   HostedDate = dalEvent.HostedDate
+                                   EventId = eventModel.EventId,
+                                   Description = eventModel.Description,
+                                   HostedDate = eventModel.HostedDate
                                };
 
-                var dalHost = _hostRepo.GetHost(dalEvent.HostId);
+                var hostModel = HostRepository.GetHost(eventModel.HostId);
                 item.Host = new Host
                                 {
-                                    HostId = dalHost.HostId,
-                                    Name = dalHost.Name
+                                    HostId = hostModel.HostId,
+                                    Name = hostModel.Name
                                 };
 
                 return Ok(item);
