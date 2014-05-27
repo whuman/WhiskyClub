@@ -19,7 +19,7 @@ namespace WhiskyClub.WebAPI.Controllers
         }
 
         // GET api/<controller>
-        public HttpResponseMessage Get()
+        public IHttpActionResult Get()
         {
             var hosts = from h in HostRepository.GetAllHosts()
                         select new Host
@@ -28,10 +28,7 @@ namespace WhiskyClub.WebAPI.Controllers
                             Name = h.Name
                         };
 
-            // Write the list to the response body.
-            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, hosts);
-
-            return response;
+            return Ok(hosts);
         }
 
         // GET api/<controller>/5

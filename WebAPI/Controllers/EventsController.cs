@@ -21,8 +21,8 @@ namespace WhiskyClub.WebAPI.Controllers
             EventRepository = new EventRepository();
             HostRepository = new HostRepository();
         }
-                
-        public HttpResponseMessage Get()
+
+        public IHttpActionResult Get()
         {
             var events = from e in EventRepository.GetAllEvents()
                          orderby e.HostedDate descending
@@ -33,10 +33,7 @@ namespace WhiskyClub.WebAPI.Controllers
                                         HostedDate = e.HostedDate
                                     };
 
-            // Write the list to the response body.
-            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, events);
-            
-            return response;
+            return Ok(events);
         }
 
         // GET api/<controller>/5
