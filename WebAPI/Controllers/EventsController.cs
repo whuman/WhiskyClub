@@ -34,9 +34,11 @@ namespace WhiskyClub.WebAPI.Controllers
             HostRepository = hostsRepository;
         }
 
-        public IHttpActionResult Get()
+        // GET api/<controller>
+        public IHttpActionResult GetAll()
         {
             var events = from e in EventRepository.GetAllEvents()
+                         //join h in HostRepository.GetAllHosts() on e.HostId equals h.HostId
                          orderby e.HostedDate descending
                          select new Event
                                     {

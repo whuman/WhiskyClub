@@ -26,7 +26,7 @@ namespace WhiskyClub.WebAPI.Controllers
         }
 
         // GET api/<controller>
-        public IHttpActionResult Get()
+        public IHttpActionResult GetAll()
         {
             var hosts = from h in HostRepository.GetAllHosts()
                         select new Host
