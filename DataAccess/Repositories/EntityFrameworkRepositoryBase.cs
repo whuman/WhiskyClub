@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using WhiskyClub.DataAccess.Entities;
@@ -55,6 +56,31 @@ namespace WhiskyClub.DataAccess.Repositories
         protected IQueryable<TEntity> GetAll<TEntity>(Expression<Func<TEntity, bool>> filter) where TEntity : class
         {
             return DbContext.Set<TEntity>().Where(filter);
+        }
+
+        protected TEntity Insert<TEntity>(TEntity entity) where TEntity : class
+        {
+            DbContext.Set<TEntity>().Add(entity);
+            DbContext.SaveChanges();
+
+            // Return entity in case users wants to reference newly created id
+            return entity;
+        }
+
+        protected void Update<TEntity>(TEntity entity) where TEntity : class
+        {
+            // Attach entity (therefore does not need to be loaded from DbContext)
+            DbContext.Set<TEntity>().Attach(entity);
+            DbContext.Entry(entity).State = EntityState.Modified;
+            DbContext.SaveChanges();
+        }
+
+        protected void Delete<TEntity>(TEntity entity) where TEntity : class
+        {
+            // Attach entity (therefore does not need to be loaded from DbContext)
+            DbContext.Set<TEntity>().Attach(entity);
+            DbContext.Set<TEntity>().Remove(entity);
+            DbContext.SaveChanges();
         }
 
         #region IDisposable Members
