@@ -1,23 +1,22 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Net.Http;
+using System.Web.Http;
 using System.Web.Http.Results;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
-using API = WhiskyClub.WebAPI.Models;
-using DAL = WhiskyClub.DataAccess.Models;
 using WhiskyClub.DataAccess.Repositories;
 using WhiskyClub.WebAPI.Controllers;
-using System.Net.Http;
-using System.Web.Http;
+using API = WhiskyClub.WebAPI.Models;
+using DAL = WhiskyClub.DataAccess.Models;
 
-namespace WhiskyClub.WebAPI.Tests
+namespace WhiskyClub.WebAPI.Tests.UnitTests
 {
     [TestClass]
     public class MembersControllerTests
     {
-        private const string _requestUriString = "http://localhost/WhiskyClubData/api/members/";
-
         public IMemberRepository MemberRepo { get; set; }
 
         [TestInitialize()]
@@ -39,7 +38,7 @@ namespace WhiskyClub.WebAPI.Tests
             var membersController = new MembersController(MemberRepo);
 
             // Act
-            var result = membersController.GetAll() as OkNegotiatedContentResult<IEnumerable<API.Member>>;
+            var result = membersController.Get() as OkNegotiatedContentResult<IEnumerable<API.Member>>;
 
             // Assert
             MemberRepo.AssertWasCalled(x => x.GetAllMembers());   // Not really useful as we don't care how the Repo gets the data
@@ -139,7 +138,7 @@ namespace WhiskyClub.WebAPI.Tests
 
             var member = result.Content as API.Member;
             Assert.IsNotNull(member);
-            Assert.AreEqual(result.Location.ToString(), string.Format("{0}{1}", _requestUriString, newMember.MemberId));
+            Assert.AreEqual(result.Location.ToString(), string.Format("{0}{1}/{2}", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Members, newMember.MemberId));
         }
 
         [TestMethod]
@@ -243,7 +242,7 @@ namespace WhiskyClub.WebAPI.Tests
         {
             membersController.Request = new HttpRequestMessage();
             membersController.Request.SetConfiguration(new HttpConfiguration());
-            membersController.Request.RequestUri = new Uri(_requestUriString);
+            membersController.Request.RequestUri = new Uri(string.Format("{0}{1}", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Members));
         }
 
         #endregion

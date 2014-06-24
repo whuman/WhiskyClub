@@ -27,7 +27,7 @@ namespace WhiskyClub.WebAPI.Controllers
         }
 
         // GET api/<controller>
-        public IHttpActionResult GetAll()
+        public IHttpActionResult Get()
         {
             var members = from h in MemberRepository.GetAllMembers()
                           select new API.Member
@@ -40,11 +40,11 @@ namespace WhiskyClub.WebAPI.Controllers
         }
 
         // GET api/<controller>/5
-        public IHttpActionResult Get(int memberId)
+        public IHttpActionResult Get(int id)
         {
             try
             {
-                var memberModel = MemberRepository.GetMember(memberId);
+                var memberModel = MemberRepository.GetMember(id);
                 var item = new API.Member
                                {
                                    MemberId = memberModel.MemberId,
@@ -73,7 +73,7 @@ namespace WhiskyClub.WebAPI.Controllers
             {
                 member.MemberId = newMember.MemberId;
 
-                return Created<API.Member>(Request.RequestUri + member.MemberId.ToString(), member);
+                return Created<API.Member>(string.Format("{0}/{1}", Request.RequestUri, member.MemberId), member);
             }
             else
             {
@@ -108,20 +108,20 @@ namespace WhiskyClub.WebAPI.Controllers
             }
         }
 
-        ////// DELETE api/<controller>/5
-        ////public void Delete(int id)
-        ////{
-        ////    var status = _Repository.DeleteCustomer(id);
-        ////    if (status)
-        ////    {
-        ////        //return new HttpResponseMessage(HttpStatusCode.OK);
-        ////        return Ok();
-        ////    }
-        ////    else
-        ////    {
-        ////        //throw new HttpResponseException(HttpStatusCode.NotFound);
-        ////        return NotFound();
-        ////    }
-        ////}
+        // DELETE api/<controller>/5
+        public IHttpActionResult Delete(int id)
+        {
+            var status = MemberRepository.DeleteMember(id);
+            if (status)
+            {
+                //return new HttpResponseMessage(HttpStatusCode.OK);
+                return Ok();
+            }
+            else
+            {
+                //throw new HttpResponseException(HttpStatusCode.Conflict);
+                return Conflict();
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http.Results;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
@@ -9,7 +9,7 @@ using WhiskyClub.WebAPI.Controllers;
 using API = WhiskyClub.WebAPI.Models;
 using DAL = WhiskyClub.DataAccess.Models;
 
-namespace WhiskyClub.WebAPI.Tests
+namespace WhiskyClub.WebAPI.Tests.UnitTests
 {
     [TestClass]
     public class EventsControllerTests

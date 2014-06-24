@@ -13,5 +13,7 @@ namespace WhiskyClub.DataAccess.Repositories
         Member InsertMember(string name);
 
         bool UpdateMember(int memberId, string name);
+
+        bool DeleteMember(int memberId);
     }
 }

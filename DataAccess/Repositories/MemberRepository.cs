@@ -12,35 +12,83 @@ namespace WhiskyClub.DataAccess.Repositories
     {
         public Models.Member GetMember(int memberId)
         {
-            var entity = GetOne<Member, int>(memberId);
+            var member = GetOne<Member, int>(memberId);
 
             return new Models.Member
                        {
-                           MemberId = entity.MemberId,
-                           Name = entity.Name
+                           MemberId = member.MemberId,
+                           Name = member.Name
                        };
         }
 
         public List<Models.Member> GetAllMembers()
         {
-            var hostItems = from e in GetAll<Member>()
-                            select new Models.Member
-                                       {
-                                           MemberId = e.MemberId,
-                                           Name = e.Name
-                                       };
+            var items = from e in GetAll<Member>()
+                        select new Models.Member
+                                   {
+                                       MemberId = e.MemberId,
+                                       Name = e.Name
+                                   };
 
-            return hostItems.ToList();
+            return items.ToList();
         }
-        
+
         public Models.Member InsertMember(string name)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var member = new Member();
+                member.Name = name;
+                member.InsertedDate = DateTime.Now;
+                member.UpdatedDate = DateTime.Now;
+
+                Insert(member);
+
+                return new Models.Member
+                           {
+                               MemberId = member.MemberId,
+                               Name = member.Name
+                           };
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public bool UpdateMember(int memberId, string name)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var member = GetOne<Member, int>(memberId);
+                member.Name = name;
+                member.UpdatedDate = DateTime.Now;
+
+                Update(member);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        
+        public bool DeleteMember(int memberId)
+        {
+            try
+            {
+                var member = new Member();
+                member.MemberId = memberId;
+
+                Delete(member);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }
