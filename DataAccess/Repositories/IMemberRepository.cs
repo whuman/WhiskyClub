@@ -10,8 +10,8 @@ namespace WhiskyClub.DataAccess.Repositories
 
         List<Member> GetAllMembers();
 
-        Member AddMember(Member newMember);
+        Member InsertMember(string name);
 
-        bool UpdateMember(Member existingMember);
+        bool UpdateMember(int memberId, string name);
     }
 }

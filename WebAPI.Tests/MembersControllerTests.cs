@@ -8,12 +8,16 @@ using API = WhiskyClub.WebAPI.Models;
 using DAL = WhiskyClub.DataAccess.Models;
 using WhiskyClub.DataAccess.Repositories;
 using WhiskyClub.WebAPI.Controllers;
+using System.Net.Http;
+using System.Web.Http;
 
 namespace WhiskyClub.WebAPI.Tests
 {
     [TestClass]
     public class MembersControllerTests
     {
+        private const string _requestUriString = "http://localhost/WhiskyClubData/api/members/";
+
         public IMemberRepository MemberRepo { get; set; }
 
         [TestInitialize()]
@@ -24,80 +28,206 @@ namespace WhiskyClub.WebAPI.Tests
         }
 
         [TestMethod]
-        public void GetAllMembers_ShouldReturnAllMembers()
+        public void GetAll_ShouldReturnAllMembers()
         {
             var mockedMemberList = GetMockedMemberList();
 
             // Arrange           
             MemberRepo.Stub(repo => repo.GetAllMembers())
-                    .Return(mockedMemberList);
+                      .Return(mockedMemberList);
+
+            var membersController = new MembersController(MemberRepo);
 
             // Act
-            var hostsController = new MembersController(MemberRepo);
-            var result = hostsController.GetAll() as OkNegotiatedContentResult<IEnumerable<API.Member>>;
-            
+            var result = membersController.GetAll() as OkNegotiatedContentResult<IEnumerable<API.Member>>;
+
             // Assert
             MemberRepo.AssertWasCalled(x => x.GetAllMembers());   // Not really useful as we don't care how the Repo gets the data
 
             Assert.IsNotNull(result, "Result was not of the correct type.");
 
-            var hostList = result.Content as IEnumerable<API.Member>;
+            var memberList = result.Content as IEnumerable<API.Member>;
 
-            Assert.IsNotNull(hostList);
-            Assert.AreEqual(hostList.Count(), mockedMemberList.Count, "Returned list item count does not match");
+            Assert.IsNotNull(memberList);
+            Assert.AreEqual(memberList.Count(), mockedMemberList.Count, "Returned list item count does not match");
         }
 
         [TestMethod]
-        public void GetMember_ShouldFindMember()
+        public void Get_ShouldFindMember()
         {
             var mockedMemberList = GetMockedMemberList();
-            var hostId = 3;
+            var memberId = 3;
 
             // Arrange 
-            MemberRepo.Stub(repo => repo.GetMember(hostId))
-                    .Return(mockedMemberList.First(mh => mh.MemberId == hostId));
+            MemberRepo.Stub(repo => repo.GetMember(memberId))
+                      .Return(mockedMemberList.First(mh => mh.MemberId == memberId));
+
+            var membersController = new MembersController(MemberRepo);
 
             // Act
-            var hostsController = new MembersController(MemberRepo);
-            var result = hostsController.Get(hostId) as OkNegotiatedContentResult<API.Member>;
+            var result = membersController.Get(memberId) as OkNegotiatedContentResult<API.Member>;
 
             // Assert
-            MemberRepo.AssertWasCalled(x => x.GetMember(hostId));   // Not really useful as we don't care how the Repo gets the data
+            MemberRepo.AssertWasCalled(x => x.GetMember(memberId));   // Not really useful as we don't care how the Repo gets the data
             MemberRepo.AssertWasNotCalled(x => x.GetAllMembers());  // Not really useful as we don't care how the Repo gets the data
 
             Assert.IsNotNull(result, "Result was not of the correct type.");
 
-            var host = result.Content as API.Member;
-            Assert.IsNotNull(host);
-            Assert.AreEqual(host.MemberId, hostId);
+            var member = result.Content as API.Member;
+            Assert.IsNotNull(member);
+            Assert.AreEqual(member.MemberId, memberId);
         }
 
         [TestMethod]
-        public void GetMember_ShouldNotFindMember()
+        public void Get_ShouldNotFindMember()
         {
-            var hostId = 5;
+            var memberId = 5;
 
             // Arrange
-            MemberRepo.Stub(repo => repo.GetMember(hostId))
-                    .Throw(new NullReferenceException());
+            MemberRepo.Stub(repo => repo.GetMember(memberId))
+                      .Throw(new NullReferenceException());
+
+            var membersController = new MembersController(MemberRepo);
 
             // Act
-            var hostsController = new MembersController(MemberRepo);
-            var result = hostsController.Get(hostId) as NotFoundResult;
+            var result = membersController.Get(memberId) as NotFoundResult;
 
             // Assert
             Assert.IsNotNull(result, "Result was not of the correct type.");
         }
 
+        [TestMethod]
+        public void Post_ShouldReturnWithCorrectId()
+        {
+            var newMember = GetMockedMember(1);
+
+            // Arrange
+            MemberRepo.Stub(repo => repo.InsertMember(newMember.Name))
+                      .Return(newMember);
+
+            var membersController = new MembersController(MemberRepo);
+            SetupControllerForTests(membersController);
+
+            // Act 
+            var result = membersController.Post(new API.Member { Name = newMember.Name }) as CreatedNegotiatedContentResult<API.Member>;
+
+            // Assert
+            Assert.IsNotNull(result, "Result was not of the correct type.");
+
+            var member = result.Content as API.Member;
+            Assert.IsNotNull(member);
+            Assert.AreEqual(member.MemberId, newMember.MemberId);
+        }
+
+        [TestMethod]
+        public void Post_ShouldReturnWithCorrectLocation()
+        {
+            var newMember = GetMockedMember(1);
+
+            // Arrange
+            MemberRepo.Stub(repo => repo.InsertMember(newMember.Name))
+                      .Return(newMember);
+
+            var membersController = new MembersController(MemberRepo);
+            SetupControllerForTests(membersController);
+
+            // Act 
+            var result = membersController.Post(new API.Member { Name = newMember.Name }) as CreatedNegotiatedContentResult<API.Member>;
+
+            // Assert
+            Assert.IsNotNull(result, "Result was not of the correct type.");
+
+            var member = result.Content as API.Member;
+            Assert.IsNotNull(member);
+            Assert.AreEqual(result.Location.ToString(), string.Format("{0}{1}", _requestUriString, newMember.MemberId));
+        }
+
+        [TestMethod]
+        public void Post_ShouldReturnBadRequestForNullMember()
+        {
+            // Arrange
+            var membersController = new MembersController(MemberRepo);
+
+            // Act 
+            var result = membersController.Post(null) as InvalidModelStateResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result was not of the correct type.");
+        }
+
+        [TestMethod]
+        public void Put_ShouldReturnOKRequest()
+        {
+            var existingMember = GetMockedMember(1);
+
+            // Arrange
+            MemberRepo.Stub(repo => repo.UpdateMember(existingMember.MemberId, existingMember.Name))
+                      .Return(true);
+
+            var membersController = new MembersController(MemberRepo);
+
+            // Act 
+            var result = membersController.Put(existingMember.MemberId, new API.Member { MemberId = existingMember.MemberId, Name = existingMember.Name }) as OkResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result was not of the correct type.");
+        }
+
+        [TestMethod]
+        public void Put_ShouldReturnBadRequestErrorMessageResultForDifferingId()
+        {
+            // Arrange
+            var membersController = new MembersController(MemberRepo);
+
+            // Act
+            var result = membersController.Put(0, new API.Member { MemberId = 1, Name = "Member Name" }) as BadRequestErrorMessageResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result was not of the correct type.");
+        }
+
+        [TestMethod]
+        public void Put_ShouldReturnBadRequestForNullMember()
+        {
+            // Arrange
+            var membersController = new MembersController(MemberRepo);
+
+            // Act 
+            var result = membersController.Put(0, null) as InvalidModelStateResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result was not of the correct type.");
+        }
+
+        [TestMethod]
+        public void Put_ShouldReturnNotFoundForInvalidId()
+        {
+            var existingMember = GetMockedMember(1);
+
+            // Arrange
+            MemberRepo.Stub(repo => repo.UpdateMember(existingMember.MemberId, existingMember.Name))
+                      .Return(false);
+
+            var membersController = new MembersController(MemberRepo);
+
+            // Act 
+            var result = membersController.Put(existingMember.MemberId, new API.Member { MemberId = existingMember.MemberId, Name = existingMember.Name }) as NotFoundResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result was not of the correct type.");
+        }
+
+        #region Private Methods
+
         private List<DAL.Member> GetMockedMemberList()
         {
-            var hosts = new List<DAL.Member>();
+            var members = new List<DAL.Member>();
 
-            hosts.Add(GetMockedMember(3));
-            hosts.Add(GetMockedMember(2));
-            hosts.Add(GetMockedMember(1));
+            members.Add(GetMockedMember(3));
+            members.Add(GetMockedMember(2));
+            members.Add(GetMockedMember(1));
 
-            return hosts;
+            return members;
         }
 
         private DAL.Member GetMockedMember(int id)
@@ -108,5 +238,14 @@ namespace WhiskyClub.WebAPI.Tests
                            Name = string.Format("Member {0}", id)
                        };
         }
+
+        private static void SetupControllerForTests(ApiController membersController)
+        {
+            membersController.Request = new HttpRequestMessage();
+            membersController.Request.SetConfiguration(new HttpConfiguration());
+            membersController.Request.RequestUri = new Uri(_requestUriString);
+        }
+
+        #endregion
     }
 }

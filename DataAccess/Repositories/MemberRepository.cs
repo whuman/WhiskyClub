@@ -33,12 +33,12 @@ namespace WhiskyClub.DataAccess.Repositories
             return hostItems.ToList();
         }
         
-        public Models.Member AddMember(Models.Member newMember)
+        public Models.Member InsertMember(string name)
         {
             throw new NotImplementedException();
         }
 
-        public bool UpdateMember(Models.Member existingMember)
+        public bool UpdateMember(int memberId, string name)
         {
             throw new NotImplementedException();
         }

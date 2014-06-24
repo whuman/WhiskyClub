@@ -5,7 +5,8 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using WhiskyClub.DataAccess.Repositories;
-using WhiskyClub.WebAPI.Models;
+using DAL = WhiskyClub.DataAccess.Models;
+using API = WhiskyClub.WebAPI.Models;
 
 namespace WhiskyClub.WebAPI.Controllers
 {
@@ -29,11 +30,11 @@ namespace WhiskyClub.WebAPI.Controllers
         public IHttpActionResult GetAll()
         {
             var members = from h in MemberRepository.GetAllMembers()
-                          select new Member
-                          {
-                              MemberId = h.MemberId,
-                              Name = h.Name
-                          };
+                          select new API.Member
+                                     {
+                                         MemberId = h.MemberId,
+                                         Name = h.Name
+                                     };
 
             return Ok(members);
         }
@@ -44,7 +45,7 @@ namespace WhiskyClub.WebAPI.Controllers
             try
             {
                 var memberModel = MemberRepository.GetMember(memberId);
-                var item = new Member
+                var item = new API.Member
                                {
                                    MemberId = memberModel.MemberId,
                                    Name = memberModel.Name
@@ -58,19 +59,69 @@ namespace WhiskyClub.WebAPI.Controllers
             }
         }
 
-        ////// POST api/<controller>
-        ////public void Post([FromBody]string value)
-        ////{
-        ////}
+        // POST api/<controller>
+        public IHttpActionResult Post([FromBody]API.Member member)
+        {
+            if (member == null || !ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        ////// PUT api/<controller>/5
-        ////public void Put(int id, [FromBody]string value)
-        ////{
-        ////}
+            var newMember = MemberRepository.InsertMember(member.Name);
+
+            if (newMember != null)
+            {
+                member.MemberId = newMember.MemberId;
+
+                return Created<API.Member>(Request.RequestUri + member.MemberId.ToString(), member);
+            }
+            else
+            {
+                return Conflict();
+            }
+        }
+
+        // PUT api/<controller>/5
+        public IHttpActionResult Put(int id, [FromBody]API.Member member)
+        {
+            if (member == null || !ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != member.MemberId)
+            {
+                return BadRequest("MemberId does not match");
+            }
+
+            // TODO : Instead of testing a return value here, we could simply throw exceptions from Repo
+            var status = MemberRepository.UpdateMember(id, member.Name);
+            if (status)
+            {
+                //return new HttpResponseMessage(HttpStatusCode.OK);
+                return Ok();
+            }
+            else
+            {
+                //throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
+            }
+        }
 
         ////// DELETE api/<controller>/5
         ////public void Delete(int id)
         ////{
+        ////    var status = _Repository.DeleteCustomer(id);
+        ////    if (status)
+        ////    {
+        ////        //return new HttpResponseMessage(HttpStatusCode.OK);
+        ////        return Ok();
+        ////    }
+        ////    else
+        ////    {
+        ////        //throw new HttpResponseException(HttpStatusCode.NotFound);
+        ////        return NotFound();
+        ////    }
         ////}
     }
 }
