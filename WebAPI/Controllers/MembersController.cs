@@ -9,45 +9,45 @@ using WhiskyClub.WebAPI.Models;
 
 namespace WhiskyClub.WebAPI.Controllers
 {
-    public class HostsController : ApiController
+    public class MembersController : ApiController
     {
-        public IHostRepository HostRepository { get; set; }
+        public IMemberRepository MemberRepository { get; set; }
 
-        public HostsController() : this(new HostRepository()) { }
+        public MembersController() : this(new MemberRepository()) { }
 
-        public HostsController(IHostRepository hostRepository)
+        public MembersController(IMemberRepository memberRepository)
         {
-            if (hostRepository == null)
+            if (memberRepository == null)
             {
-                throw new ArgumentNullException("hostRepository");
+                throw new ArgumentNullException("memberRepository");
             }
-            
-            HostRepository = hostRepository;
+
+            MemberRepository = memberRepository;
         }
 
         // GET api/<controller>
         public IHttpActionResult GetAll()
         {
-            var hosts = from h in HostRepository.GetAllHosts()
-                        select new Host
-                        {
-                            HostId = h.HostId,
-                            Name = h.Name
-                        };
+            var members = from h in MemberRepository.GetAllMembers()
+                          select new Member
+                          {
+                              MemberId = h.MemberId,
+                              Name = h.Name
+                          };
 
-            return Ok(hosts);
+            return Ok(members);
         }
 
         // GET api/<controller>/5
-        public IHttpActionResult Get(int hostId)
+        public IHttpActionResult Get(int memberId)
         {
             try
             {
-                var hostModel = HostRepository.GetHost(hostId);
-                var item = new Host
+                var memberModel = MemberRepository.GetMember(memberId);
+                var item = new Member
                                {
-                                   HostId = hostModel.HostId,
-                                   Name = hostModel.Name
+                                   MemberId = memberModel.MemberId,
+                                   Name = memberModel.Name
                                };
 
                 return Ok(item);

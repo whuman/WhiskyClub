@@ -14,6 +14,6 @@ namespace WhiskyClub.WebAPI.Models
 
         public DateTime HostedDate { get; set; }
 
-        public Host Host { get; set; }
+        public Member Member { get; set; }
     }
 }

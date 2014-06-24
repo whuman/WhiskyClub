@@ -8,25 +8,25 @@ using WhiskyClub.DataAccess.Repositories;
 
 namespace WhiskyClub.DataAccess.Repositories
 {
-    public class HostRepository : EntityFrameworkRepositoryBase, IHostRepository
+    public class MemberRepository : EntityFrameworkRepositoryBase, IMemberRepository
     {
-        public Models.Host GetHost(int hostId)
+        public Models.Member GetMember(int memberId)
         {
-            var entity = GetOne<Host, int>(hostId);
+            var entity = GetOne<Member, int>(memberId);
 
-            return new Models.Host
+            return new Models.Member
                        {
-                           HostId = entity.HostId,
+                           MemberId = entity.MemberId,
                            Name = entity.Name
                        };
         }
 
-        public List<Models.Host> GetAllHosts()
+        public List<Models.Member> GetAllMembers()
         {
-            var hostItems = from e in GetAll<Host>()
-                            select new Models.Host
+            var hostItems = from e in GetAll<Member>()
+                            select new Models.Member
                                        {
-                                           HostId = e.HostId,
+                                           MemberId = e.MemberId,
                                            Name = e.Name
                                        };
 

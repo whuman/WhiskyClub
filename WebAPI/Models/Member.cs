@@ -5,9 +5,9 @@ using System.Web;
 
 namespace WhiskyClub.WebAPI.Models
 {
-    public class Host
+    public class Member
     {
-        public int HostId { get; set; }
+        public int MemberId { get; set; }
 
         public string Name { get; set; }
     }

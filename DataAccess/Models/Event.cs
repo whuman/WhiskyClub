@@ -6,7 +6,7 @@ namespace WhiskyClub.DataAccess.Models
     {
         public int EventId { get; set; }
 
-        public int HostId { get; set; }
+        public int MemberId { get; set; }
 
         public string Description { get; set; }
 

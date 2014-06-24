@@ -60,9 +60,10 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="Tables" />
+    <Folder Include="Data Scripts" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Tables\Event.sql" />
-    <None Include="Tables\Host.sql" />
+    <None Include="Tables\Member.sql" />
   </ItemGroup>
 </Project>

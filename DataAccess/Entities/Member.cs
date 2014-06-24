@@ -12,14 +12,14 @@ namespace WhiskyClub.DataAccess.Entities
     using System;
     using System.Collections.Generic;
     
-    internal partial class Host
+    internal partial class Member
     {
-    	public Host()
+    	public Member()
     	{
     		this.Events = new HashSet<Event>();
     	}
     
-    	public int HostId { get; set; }
+    	public int MemberId { get; set; }
     	public string Name { get; set; }
     	public byte[] Version { get; set; }
     	public System.DateTime InsertedDate { get; set; }

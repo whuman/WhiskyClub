@@ -10,40 +10,40 @@
             <PropertyRef Name="EventId" />
           </Key>
           <Property Name="EventId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="HostId" Type="int" Nullable="false" />
+          <Property Name="MemberId" Type="int" Nullable="false" />
           <Property Name="Description" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="HostedDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="Version" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="InsertedDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="UpdatedDate" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
-        <EntityType Name="Host">
+        <EntityType Name="Member">
           <Key>
-            <PropertyRef Name="HostId" />
+            <PropertyRef Name="MemberId" />
           </Key>
-          <Property Name="HostId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Version" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="InsertedDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="UpdatedDate" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
-        <Association Name="FK_Event_Host">
-          <End Role="Host" Type="Self.Host" Multiplicity="1" />
+        <Association Name="FK_Event_Member">
+          <End Role="Member" Type="Self.Member" Multiplicity="1" />
           <End Role="Event" Type="Self.Event" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Host">
-              <PropertyRef Name="HostId" />
+            <Principal Role="Member">
+              <PropertyRef Name="MemberId" />
             </Principal>
             <Dependent Role="Event">
-              <PropertyRef Name="HostId" />
+              <PropertyRef Name="MemberId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="WhiskyClubDataAccessEntitiesStoreContainer">
           <EntitySet Name="Event" EntityType="Self.Event" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Host" EntityType="Self.Host" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_Event_Host" Association="Self.FK_Event_Host">
-            <End Role="Host" EntitySet="Host" />
+          <EntitySet Name="Member" EntityType="Self.Member" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Event_Member" Association="Self.FK_Event_Member">
+            <End Role="Member" EntitySet="Member" />
             <End Role="Event" EntitySet="Event" />
           </AssociationSet>
         </EntityContainer>
@@ -51,50 +51,50 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="WhiskyClub.DataAccess.Entities" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="WhiskyClubContext" annotation:LazyLoadingEnabled="true" a:TypeAccess="Internal" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration">
+          <EntitySet Name="Events" EntityType="WhiskyClub.DataAccess.Entities.Event" />
+          <EntitySet Name="Members" EntityType="WhiskyClub.DataAccess.Entities.Member" />
+          <AssociationSet Name="FK_Event_Member" Association="WhiskyClub.DataAccess.Entities.FK_Event_Member">
+            <End Role="Member" EntitySet="Members" />
+            <End Role="Event" EntitySet="Events" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="Event">
           <Key>
             <PropertyRef Name="EventId" />
           </Key>
           <Property Name="EventId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="HostId" Type="Int32" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="HostedDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="Version" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
-          <NavigationProperty Name="Host" Relationship="Self.FK_Event_Host" FromRole="Event" ToRole="Host" />
+          <NavigationProperty Name="Member" Relationship="WhiskyClub.DataAccess.Entities.FK_Event_Member" FromRole="Event" ToRole="Member" />
         </EntityType>
-        <EntityType Name="Host">
+        <EntityType Name="Member">
           <Key>
-            <PropertyRef Name="HostId" />
+            <PropertyRef Name="MemberId" />
           </Key>
-          <Property Name="HostId" Type="Int32" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Version" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
-          <NavigationProperty Name="Events" Relationship="Self.FK_Event_Host" FromRole="Host" ToRole="Event" />
+          <NavigationProperty Name="Events" Relationship="WhiskyClub.DataAccess.Entities.FK_Event_Member" FromRole="Member" ToRole="Event" />
         </EntityType>
-        <Association Name="FK_Event_Host">
-          <End Role="Host" Type="Self.Host" Multiplicity="1" />
-          <End Role="Event" Type="Self.Event" Multiplicity="*" />
+        <Association Name="FK_Event_Member">
+          <End Type="WhiskyClub.DataAccess.Entities.Member" Role="Member" Multiplicity="1" />
+          <End Type="WhiskyClub.DataAccess.Entities.Event" Role="Event" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Host">
-              <PropertyRef Name="HostId" />
+            <Principal Role="Member">
+              <PropertyRef Name="MemberId" />
             </Principal>
             <Dependent Role="Event">
-              <PropertyRef Name="HostId" />
+              <PropertyRef Name="MemberId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="WhiskyClubContext" annotation:LazyLoadingEnabled="true" a:TypeAccess="Internal" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration">
-          <EntitySet Name="Events" EntityType="Self.Event" />
-          <EntitySet Name="Hosts" EntityType="Self.Host" />
-          <AssociationSet Name="FK_Event_Host" Association="Self.FK_Event_Host">
-            <End Role="Host" EntitySet="Hosts" />
-            <End Role="Event" EntitySet="Events" />
-          </AssociationSet>
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -104,24 +104,24 @@
           <EntitySetMapping Name="Events">
             <EntityTypeMapping TypeName="WhiskyClub.DataAccess.Entities.Event">
               <MappingFragment StoreEntitySet="Event">
-                <ScalarProperty Name="EventId" ColumnName="EventId" />
-                <ScalarProperty Name="HostId" ColumnName="HostId" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="HostedDate" ColumnName="HostedDate" />
-                <ScalarProperty Name="Version" ColumnName="Version" />
-                <ScalarProperty Name="InsertedDate" ColumnName="InsertedDate" />
                 <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="InsertedDate" ColumnName="InsertedDate" />
+                <ScalarProperty Name="Version" ColumnName="Version" />
+                <ScalarProperty Name="HostedDate" ColumnName="HostedDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="EventId" ColumnName="EventId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Hosts">
-            <EntityTypeMapping TypeName="WhiskyClub.DataAccess.Entities.Host">
-              <MappingFragment StoreEntitySet="Host">
-                <ScalarProperty Name="HostId" ColumnName="HostId" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Version" ColumnName="Version" />
-                <ScalarProperty Name="InsertedDate" ColumnName="InsertedDate" />
+          <EntitySetMapping Name="Members">
+            <EntityTypeMapping TypeName="WhiskyClub.DataAccess.Entities.Member">
+              <MappingFragment StoreEntitySet="Member">
                 <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="InsertedDate" ColumnName="InsertedDate" />
+                <ScalarProperty Name="Version" ColumnName="Version" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

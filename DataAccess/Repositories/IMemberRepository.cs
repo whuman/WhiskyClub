@@ -4,10 +4,10 @@ using WhiskyClub.DataAccess.Models;
 
 namespace WhiskyClub.DataAccess.Repositories
 {
-    public interface IHostRepository : IDisposable
+    public interface IMemberRepository : IDisposable
     {
-        Host GetHost(int hostId);
+        Member GetMember(int memberId);
 
-        List<Host> GetAllHosts();
+        List<Member> GetAllMembers();
     }
 }

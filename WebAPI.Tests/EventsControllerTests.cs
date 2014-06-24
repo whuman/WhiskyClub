@@ -15,18 +15,18 @@ namespace WhiskyClub.WebAPI.Tests
     public class EventsControllerTests
     {
         public IEventRepository EventRepo { get; set; }
-        public IHostRepository HostRepo { get; set; }
+        public IMemberRepository MemberRepo { get; set; }
 
         [TestInitialize()]
         public void Initialize()
         {
             // Arrange  
             EventRepo = MockRepository.GenerateMock<IEventRepository>();
-            HostRepo = MockRepository.GenerateMock<IHostRepository>();
+            MemberRepo = MockRepository.GenerateMock<IMemberRepository>();
         }
 
         [TestMethod]
-        public void GetAllEvents_ShouldReturnAllEventsWithoutHostDetails()
+        public void GetAllEvents_ShouldReturnAllEventsWithoutMemberDetails()
         {
             var mockedEventList = GetMockedEventList();
 
@@ -35,7 +35,7 @@ namespace WhiskyClub.WebAPI.Tests
                      .Return(mockedEventList);
 
             // Act
-            var eventsController = new EventsController(EventRepo, HostRepo);
+            var eventsController = new EventsController(EventRepo, MemberRepo);
             var result = eventsController.GetAll() as OkNegotiatedContentResult<IEnumerable<API.Event>>;
 
             // Assert
@@ -47,26 +47,26 @@ namespace WhiskyClub.WebAPI.Tests
 
             Assert.IsNotNull(eventList);
             Assert.AreEqual(eventList.Count(), mockedEventList.Count, "Returned list item count does not match");
-            Assert.IsNull(eventList.First().Host, "Event Host is not null.");
+            Assert.IsNull(eventList.First().Member, "Event Member is not null.");
         }
 
         [TestMethod]
-        public void GetEvent_ShouldFindEventWithHostDetails()
+        public void GetEvent_ShouldFindEventWithMemberDetails()
         {
             var mockedEventList = GetMockedEventList();
-            var mockedHostList = GetMockedHostList();
+            var mockedMemberList = GetMockedMemberList();
             var eventId = 3;
-            var hostId = mockedEventList.First(me => me.EventId == eventId).HostId; // Fetch the HostId from the mockedEventList setup
+            var hostId = mockedEventList.First(me => me.EventId == eventId).MemberId; // Fetch the MemberId from the mockedEventList setup
 
             // Arrange
             EventRepo.Stub(repo => repo.GetEvent(eventId))
                      .Return(mockedEventList.First(me => me.EventId == eventId));
 
-            HostRepo.Stub(repo => repo.GetHost(hostId))
-                    .Return(mockedHostList.First(mh => mh.HostId == hostId));
+            MemberRepo.Stub(repo => repo.GetMember(hostId))
+                    .Return(mockedMemberList.First(mh => mh.MemberId == hostId));
 
             // Act
-            var eventsController = new EventsController(EventRepo, HostRepo);
+            var eventsController = new EventsController(EventRepo, MemberRepo);
             var result = eventsController.Get(eventId) as OkNegotiatedContentResult<API.Event>;
 
             // Assert
@@ -76,8 +76,8 @@ namespace WhiskyClub.WebAPI.Tests
 
             Assert.IsNotNull(eventItem);
             Assert.AreEqual(eventItem.EventId, eventId);
-            Assert.IsNotNull(eventItem.Host, "Event Host is null.");
-            Assert.AreEqual(eventItem.Host.HostId, hostId);
+            Assert.IsNotNull(eventItem.Member, "Event Member is null.");
+            Assert.AreEqual(eventItem.Member.MemberId, hostId);
         }
 
         [TestMethod]
@@ -90,7 +90,7 @@ namespace WhiskyClub.WebAPI.Tests
                      .Throw(new NullReferenceException());
 
             // Act
-            var eventsController = new EventsController(EventRepo, HostRepo);
+            var eventsController = new EventsController(EventRepo, MemberRepo);
             var result = eventsController.Get(eventId) as NotFoundResult;
 
             // Assert
@@ -108,13 +108,13 @@ namespace WhiskyClub.WebAPI.Tests
             return events;
         }
 
-        private List<DAL.Host> GetMockedHostList()
+        private List<DAL.Member> GetMockedMemberList()
         {
-            var hosts = new List<DAL.Host>();
+            var hosts = new List<DAL.Member>();
 
-            hosts.Add(GetMockedHost(3));
-            hosts.Add(GetMockedHost(2));
-            hosts.Add(GetMockedHost(1));
+            hosts.Add(GetMockedMember(3));
+            hosts.Add(GetMockedMember(2));
+            hosts.Add(GetMockedMember(1));
 
             return hosts;
         }
@@ -126,16 +126,16 @@ namespace WhiskyClub.WebAPI.Tests
                            EventId = eventId,
                            Description = string.Format("Event {0}", eventId),
                            HostedDate = DateTime.Now,
-                           HostId = hostId
+                           MemberId = hostId
                        };
         }
 
-        private DAL.Host GetMockedHost(int id)
+        private DAL.Member GetMockedMember(int id)
         {
-            return new DAL.Host
+            return new DAL.Member
                        {
-                           HostId = id,
-                           Name = string.Format("Host {0}", id)
+                           MemberId = id,
+                           Name = string.Format("Member {0}", id)
                        };
         }
 

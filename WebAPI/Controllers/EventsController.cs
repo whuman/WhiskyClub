@@ -14,31 +14,31 @@ namespace WhiskyClub.WebAPI.Controllers
     public class EventsController : ApiController
     {
         public IEventRepository EventRepository { get; set; }
-        public IHostRepository HostRepository { get; set; }
+        public IMemberRepository MemberRepository { get; set; }
 
-        public EventsController() : this(new EventRepository(), new HostRepository()) { }
+        public EventsController() : this(new EventRepository(), new MemberRepository()) { }
 
-        public EventsController(IEventRepository eventRepository, IHostRepository hostsRepository)
+        public EventsController(IEventRepository eventRepository, IMemberRepository membersRepository)
         {
             if (eventRepository == null)
             {
                 throw new ArgumentNullException("eventRepository");
             }
 
-            if (hostsRepository == null)
+            if (membersRepository == null)
             {
-                throw new ArgumentNullException("hostsRepository");
-            }            
-            
+                throw new ArgumentNullException("membersRepository");
+            }
+
             EventRepository = eventRepository;
-            HostRepository = hostsRepository;
+            MemberRepository = membersRepository;
         }
 
         // GET api/<controller>
         public IHttpActionResult GetAll()
         {
             var events = from e in EventRepository.GetAllEvents()
-                         //join h in HostRepository.GetAllHosts() on e.HostId equals h.HostId
+                         //join h in MemberRepository.GetAllMembers() on e.MemberId equals h.MemberId
                          orderby e.HostedDate descending
                          select new Event
                                     {
@@ -63,12 +63,12 @@ namespace WhiskyClub.WebAPI.Controllers
                                    HostedDate = eventModel.HostedDate
                                };
 
-                var hostModel = HostRepository.GetHost(eventModel.HostId);
-                item.Host = new Host
-                                {
-                                    HostId = hostModel.HostId,
-                                    Name = hostModel.Name
-                                };
+                var memberModel = MemberRepository.GetMember(eventModel.MemberId);
+                item.Member = new Member
+                                  {
+                                      MemberId = memberModel.MemberId,
+                                      Name = memberModel.Name
+                                  };
 
                 return Ok(item);
             }

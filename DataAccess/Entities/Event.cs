@@ -15,13 +15,13 @@ namespace WhiskyClub.DataAccess.Entities
     internal partial class Event
     {
     	public int EventId { get; set; }
-    	public int HostId { get; set; }
+    	public int MemberId { get; set; }
     	public string Description { get; set; }
     	public System.DateTime HostedDate { get; set; }
     	public byte[] Version { get; set; }
     	public System.DateTime InsertedDate { get; set; }
     	public System.DateTime UpdatedDate { get; set; }
     
-    	public virtual Host Host { get; set; }
+    	public virtual Member Member { get; set; }
     }
 }

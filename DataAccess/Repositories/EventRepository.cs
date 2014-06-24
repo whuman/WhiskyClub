@@ -13,7 +13,7 @@ namespace WhiskyClub.DataAccess.Repositories
             return new Models.Event
                        {
                            EventId = entity.EventId,
-                           HostId = entity.HostId,
+                           MemberId = entity.MemberId,
                            Description = entity.Description,
                            HostedDate = entity.HostedDate
                        };
@@ -25,7 +25,7 @@ namespace WhiskyClub.DataAccess.Repositories
                              select new Models.Event
                                         {
                                             EventId = e.EventId,
-                                            HostId = e.HostId,
+                                            MemberId = e.MemberId,
                                             Description = e.Description,
                                             HostedDate = e.HostedDate
                                         };
