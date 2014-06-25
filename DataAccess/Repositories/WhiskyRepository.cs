@@ -128,5 +128,25 @@ namespace WhiskyClub.DataAccess.Repositories
                 return false;
             }
         }
+        
+        public bool UpdateImage(int whiskyId, byte[] image)
+        {
+            try
+            {
+                var whisky = GetOne<Whisky, int>(whiskyId);
+                whisky.Image = image;
+                whisky.UpdatedDate = DateTime.Now;
+
+                Update(whisky);
+
+                CommitChanges();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
