@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using WhiskyClub.DataAccess.Repositories;
-using DAL = WhiskyClub.DataAccess.Models;
-using API = WhiskyClub.WebAPI.Models;
+using WhiskyClub.WebAPI.Models;
 
 namespace WhiskyClub.WebAPI.Controllers
 {
@@ -27,10 +23,10 @@ namespace WhiskyClub.WebAPI.Controllers
         }
 
         // GET api/<controller>
-        public IHttpActionResult Get()
+        public IHttpActionResult GetAll()
         {
             var members = from h in MemberRepository.GetAllMembers()
-                          select new API.Member
+                          select new Member
                                      {
                                          MemberId = h.MemberId,
                                          Name = h.Name
@@ -45,7 +41,7 @@ namespace WhiskyClub.WebAPI.Controllers
             try
             {
                 var memberModel = MemberRepository.GetMember(id);
-                var item = new API.Member
+                var item = new Member
                                {
                                    MemberId = memberModel.MemberId,
                                    Name = memberModel.Name
@@ -60,7 +56,7 @@ namespace WhiskyClub.WebAPI.Controllers
         }
 
         // POST api/<controller>
-        public IHttpActionResult Post([FromBody]API.Member member)
+        public IHttpActionResult Post([FromBody]Member member)
         {
             if (member == null || !ModelState.IsValid)
             {
@@ -73,7 +69,7 @@ namespace WhiskyClub.WebAPI.Controllers
             {
                 member.MemberId = newMember.MemberId;
 
-                return Created<API.Member>(string.Format("{0}/{1}", Request.RequestUri, member.MemberId), member);
+                return Created<Member>(string.Format("{0}/{1}", Request.RequestUri, member.MemberId), member);
             }
             else
             {
@@ -82,7 +78,7 @@ namespace WhiskyClub.WebAPI.Controllers
         }
 
         // PUT api/<controller>/5
-        public IHttpActionResult Put(int id, [FromBody]API.Member member)
+        public IHttpActionResult Put(int id, [FromBody]Member member)
         {
             if (member == null || !ModelState.IsValid)
             {
