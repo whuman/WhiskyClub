@@ -38,7 +38,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             var membersController = new MembersController(MemberRepo);
 
             // Act
-            var result = membersController.Get() as OkNegotiatedContentResult<IEnumerable<API.Member>>;
+            var result = membersController.GetAll() as OkNegotiatedContentResult<IEnumerable<API.Member>>;
 
             // Assert
             MemberRepo.AssertWasCalled(x => x.GetAllMembers());   // Not really useful as we don't care how the Repo gets the data
@@ -96,7 +96,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         }
 
         [TestMethod]
-        public void Post_ShouldReturnWithCorrectId()
+        public void Post_ShouldReturnWithCorrectDetails()
         {
             var newMember = GetMockedMember(1);
 
@@ -116,28 +116,6 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             var member = result.Content as API.Member;
             Assert.IsNotNull(member);
             Assert.AreEqual(member.MemberId, newMember.MemberId);
-        }
-
-        [TestMethod]
-        public void Post_ShouldReturnWithCorrectLocation()
-        {
-            var newMember = GetMockedMember(1);
-
-            // Arrange
-            MemberRepo.Stub(repo => repo.InsertMember(newMember.Name))
-                      .Return(newMember);
-
-            var membersController = new MembersController(MemberRepo);
-            SetupControllerForTests(membersController);
-
-            // Act 
-            var result = membersController.Post(new API.Member { Name = newMember.Name }) as CreatedNegotiatedContentResult<API.Member>;
-
-            // Assert
-            Assert.IsNotNull(result, "Result was not of the correct type.");
-
-            var member = result.Content as API.Member;
-            Assert.IsNotNull(member);
             Assert.AreEqual(result.Location.ToString(), string.Format("{0}{1}/{2}", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Members, newMember.MemberId));
         }
 

@@ -43,6 +43,7 @@ namespace WhiskyClub.WebAPI.Controllers
                          select new Event
                                     {
                                         EventId = e.EventId,
+                                        MemberId = e.MemberId,
                                         Description = e.Description,
                                         HostedDate = e.HostedDate
                                     };
@@ -59,6 +60,7 @@ namespace WhiskyClub.WebAPI.Controllers
                 var item = new Event
                                {
                                    EventId = eventModel.EventId,
+                                   MemberId = eventModel.MemberId,
                                    Description = eventModel.Description,
                                    HostedDate = eventModel.HostedDate
                                };
@@ -78,19 +80,50 @@ namespace WhiskyClub.WebAPI.Controllers
             }
         }
 
-        ////// POST api/<controller>
-        ////public void Post([FromBody]string value)
-        ////{
-        ////}
+        // POST api/<controller>
+        public IHttpActionResult Post([FromBody]Event hostedEvent)
+        {
+            if (hostedEvent == null || !ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        ////// PUT api/<controller>/5
-        ////public void Put(int id, [FromBody]string value)
-        ////{
-        ////}
+            var newEvent = EventRepository.InsertEvent(hostedEvent.MemberId, hostedEvent.Description, hostedEvent.HostedDate);
 
-        ////// DELETE api/<controller>/5
-        ////public void Delete(int id)
-        ////{
-        ////}
+            if (newEvent != null)
+            {
+                hostedEvent.EventId = newEvent.EventId;
+
+                return Created<Event>(string.Format("{0}/{1}", Request.RequestUri, hostedEvent.EventId), hostedEvent);
+            }
+            else
+            {
+                return Conflict();
+            }
+        }
+
+        // PUT api/<controller>/5
+        public IHttpActionResult Put(int id, [FromBody]Event hostedEvent)
+        {
+            if (hostedEvent == null || !ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != hostedEvent.EventId)
+            {
+                return BadRequest("EventId does not match");
+            }
+
+            var status = EventRepository.UpdateEvent(id, hostedEvent.MemberId, hostedEvent.Description, hostedEvent.HostedDate);
+            if (status)
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }

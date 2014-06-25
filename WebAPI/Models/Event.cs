@@ -10,6 +10,8 @@ namespace WhiskyClub.WebAPI.Models
     {
         public int EventId { get; set; }
 
+        public int MemberId { get; set; }
+
         public string Description { get; set; }
 
         public DateTime HostedDate { get; set; }

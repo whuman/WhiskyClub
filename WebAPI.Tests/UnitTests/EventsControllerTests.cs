@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net.Http;
+using System.Web.Http;
 using System.Web.Http.Results;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
@@ -26,7 +29,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         }
 
         [TestMethod]
-        public void GetAllEvents_ShouldReturnAllEventsWithoutMemberDetails()
+        public void GetAll_ShouldReturnAllEventsWithoutMemberDetails()
         {
             var mockedEventList = GetMockedEventList();
 
@@ -51,19 +54,19 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         }
 
         [TestMethod]
-        public void GetEvent_ShouldFindEventWithMemberDetails()
+        public void Get_ShouldFindEventWithMemberDetails()
         {
             var mockedEventList = GetMockedEventList();
             var mockedMemberList = GetMockedMemberList();
             var eventId = 3;
-            var hostId = mockedEventList.First(me => me.EventId == eventId).MemberId; // Fetch the MemberId from the mockedEventList setup
+            var memberId = mockedEventList.First(me => me.EventId == eventId).MemberId; // Fetch the MemberId from the mockedEventList setup
 
             // Arrange
             EventRepo.Stub(repo => repo.GetEvent(eventId))
                      .Return(mockedEventList.First(me => me.EventId == eventId));
 
-            MemberRepo.Stub(repo => repo.GetMember(hostId))
-                    .Return(mockedMemberList.First(mh => mh.MemberId == hostId));
+            MemberRepo.Stub(repo => repo.GetMember(memberId))
+                    .Return(mockedMemberList.First(mh => mh.MemberId == memberId));
 
             // Act
             var eventsController = new EventsController(EventRepo, MemberRepo);
@@ -77,11 +80,11 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             Assert.IsNotNull(eventItem);
             Assert.AreEqual(eventItem.EventId, eventId);
             Assert.IsNotNull(eventItem.Member, "Event Member is null.");
-            Assert.AreEqual(eventItem.Member.MemberId, hostId);
+            Assert.AreEqual(eventItem.Member.MemberId, memberId);
         }
 
         [TestMethod]
-        public void GetEvent_ShouldNotFindEvent()
+        public void Get_ShouldNotFindEvent()
         {
             var eventId = 5;
 
@@ -97,6 +100,107 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             Assert.IsNotNull(result, "Result was not of the correct type.");
         }
 
+        [TestMethod]
+        public void Post_ShouldReturnWithCorrectDetails()
+        {
+            var newEvent = GetMockedEvent(1, 1);
+
+            // Arrange
+            EventRepo.Stub(repo => repo.InsertEvent(newEvent.MemberId, newEvent.Description, newEvent.HostedDate))
+                     .Return(newEvent);
+
+            var hostedEventsController = new EventsController(EventRepo, MemberRepo);
+            SetupControllerForTests(hostedEventsController);
+
+            // Act 
+            var result = hostedEventsController.Post(new API.Event { MemberId = newEvent.MemberId, Description = newEvent.Description, HostedDate = newEvent.HostedDate }) as CreatedNegotiatedContentResult<API.Event>;
+
+            // Assert
+            Assert.IsNotNull(result, "Result was not of the correct type.");
+
+            var hostedEvent = result.Content as API.Event;
+            Assert.IsNotNull(hostedEvent);
+            Assert.AreEqual(hostedEvent.EventId, newEvent.EventId); // Test EventId
+            Assert.AreEqual(result.Location.ToString(), string.Format("{0}{1}/{2}", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Events, newEvent.EventId));   // Test Location
+        }
+
+        [TestMethod]
+        public void Post_ShouldReturnBadRequestForNullMember()
+        {
+            // Arrange
+            var eventsController = new EventsController(EventRepo, MemberRepo);
+
+            // Act 
+            var result = eventsController.Post(null) as InvalidModelStateResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result was not of the correct type.");
+        }
+
+        [TestMethod]
+        public void Put_ShouldReturnOKRequest()
+        {
+            var existingEvent = GetMockedEvent(1, 1);
+
+            // Arrange
+            EventRepo.Stub(repo => repo.UpdateEvent(existingEvent.EventId, existingEvent.MemberId, existingEvent.Description, existingEvent.HostedDate))
+                     .Return(true);
+
+            var eventsController = new EventsController(EventRepo, MemberRepo);
+
+            // Act 
+            var result = eventsController.Put(existingEvent.EventId, new API.Event { EventId = existingEvent.EventId, MemberId = existingEvent.MemberId, Description = existingEvent.Description, HostedDate = existingEvent.HostedDate }) as OkResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result was not of the correct type.");
+        }
+
+        [TestMethod]
+        public void Put_ShouldReturnBadRequestErrorMessageResultForDifferingId()
+        {
+            // Arrange
+            var eventsController = new EventsController(EventRepo, MemberRepo);
+
+            // Act
+            var result = eventsController.Put(0, new API.Event { EventId = 1 }) as BadRequestErrorMessageResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result was not of the correct type.");
+        }
+
+        [TestMethod]
+        public void Put_ShouldReturnBadRequestForNullEvent()
+        {
+            // Arrange
+            var eventsController = new EventsController(EventRepo, MemberRepo);
+
+            // Act 
+            var result = eventsController.Put(1, null) as InvalidModelStateResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result was not of the correct type.");
+        }
+
+        [TestMethod]
+        public void Put_ShouldReturnNotFoundForInvalidId()
+        {
+            var existingEvent = GetMockedEvent(1, 1);
+
+            // Arrange
+            EventRepo.Stub(repo => repo.UpdateEvent(existingEvent.EventId, existingEvent.MemberId, existingEvent.Description, existingEvent.HostedDate))
+                     .Return(false);
+
+            var eventsController = new EventsController(EventRepo, MemberRepo);
+
+            // Act 
+            var result = eventsController.Put(existingEvent.EventId, new API.Event { EventId = existingEvent.EventId, MemberId = existingEvent.MemberId, Description = existingEvent.Description, HostedDate = existingEvent.HostedDate }) as NotFoundResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result was not of the correct type.");
+        }
+
+        #region Private Methods
+
         private List<DAL.Event> GetMockedEventList()
         {
             var events = new List<DAL.Event>();
@@ -110,23 +214,23 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
 
         private List<DAL.Member> GetMockedMemberList()
         {
-            var hosts = new List<DAL.Member>();
+            var members = new List<DAL.Member>();
 
-            hosts.Add(GetMockedMember(3));
-            hosts.Add(GetMockedMember(2));
-            hosts.Add(GetMockedMember(1));
+            members.Add(GetMockedMember(3));
+            members.Add(GetMockedMember(2));
+            members.Add(GetMockedMember(1));
 
-            return hosts;
+            return members;
         }
 
-        private DAL.Event GetMockedEvent(int eventId, int hostId)
+        private DAL.Event GetMockedEvent(int eventId, int memberId)
         {
             return new DAL.Event
                        {
                            EventId = eventId,
+                           MemberId = memberId,
                            Description = string.Format("Event {0}", eventId),
-                           HostedDate = DateTime.Now,
-                           MemberId = hostId
+                           HostedDate = DateTime.Now
                        };
         }
 
@@ -138,6 +242,15 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
                            Name = string.Format("Member {0}", id)
                        };
         }
+
+        private static void SetupControllerForTests(ApiController eventsController)
+        {
+            eventsController.Request = new HttpRequestMessage();
+            eventsController.Request.SetConfiguration(new HttpConfiguration());
+            eventsController.Request.RequestUri = new Uri(string.Format("{0}{1}", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Events));
+        }
+
+        #endregion
 
     }
 }

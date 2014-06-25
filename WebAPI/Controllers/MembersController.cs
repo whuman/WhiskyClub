@@ -90,16 +90,13 @@ namespace WhiskyClub.WebAPI.Controllers
                 return BadRequest("MemberId does not match");
             }
 
-            // TODO : Instead of testing a return value here, we could simply throw exceptions from Repo
             var status = MemberRepository.UpdateMember(id, member.Name);
             if (status)
             {
-                //return new HttpResponseMessage(HttpStatusCode.OK);
                 return Ok();
             }
             else
             {
-                //throw new HttpResponseException(HttpStatusCode.NotFound);
                 return NotFound();
             }
         }

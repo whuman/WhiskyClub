@@ -61,21 +61,25 @@ namespace WhiskyClub.DataAccess.Repositories
         protected void Insert<TEntity>(TEntity entity) where TEntity : class
         {
             DbContext.Set<TEntity>().Add(entity);
-            DbContext.SaveChanges();
         }
 
         protected void Update<TEntity>(TEntity entity) where TEntity : class
         {
+            // Attach entity (therefore does not need to be loaded from DbContext)
             DbContext.Set<TEntity>().Attach(entity);
             DbContext.Entry(entity).State = EntityState.Modified;
-            DbContext.SaveChanges();
         }
 
         protected void Delete<TEntity>(TEntity entity) where TEntity : class
         {
             // Attach entity (therefore does not need to be loaded from DbContext)
             DbContext.Set<TEntity>().Attach(entity);
+            DbContext.Entry(entity).State = EntityState.Deleted;
             DbContext.Set<TEntity>().Remove(entity);
+        }
+
+        protected void CommitChanges()
+        {
             DbContext.SaveChanges();
         }
 

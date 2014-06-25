@@ -44,6 +44,8 @@ namespace WhiskyClub.DataAccess.Repositories
 
                 Insert(member);
 
+                CommitChanges();
+
                 return new Models.Member
                            {
                                MemberId = member.MemberId,
@@ -66,6 +68,8 @@ namespace WhiskyClub.DataAccess.Repositories
 
                 Update(member);
 
+                CommitChanges();
+
                 return true;
             }
             catch (Exception)
@@ -82,6 +86,8 @@ namespace WhiskyClub.DataAccess.Repositories
                 member.MemberId = memberId;
 
                 Delete(member);
+
+                CommitChanges();
 
                 return true;
             }

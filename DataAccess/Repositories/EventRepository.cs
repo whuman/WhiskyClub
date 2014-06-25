@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using WhiskyClub.DataAccess.Entities;
 
@@ -31,6 +32,57 @@ namespace WhiskyClub.DataAccess.Repositories
                                         };
 
             return eventItems.ToList();
+        }
+        
+        public Models.Event InsertEvent(int memberId, string description, System.DateTime hostedDate)
+        {
+            try
+            {
+                var hostedEvent = new Event();
+                hostedEvent.MemberId = memberId;
+                hostedEvent.Description = description;
+                hostedEvent.HostedDate = hostedDate;
+                hostedEvent.InsertedDate = DateTime.Now;
+                hostedEvent.UpdatedDate = DateTime.Now;
+
+                Insert(hostedEvent);
+
+                CommitChanges();
+
+                return new Models.Event
+                {
+                    EventId = hostedEvent.EventId,
+                    MemberId = hostedEvent.MemberId,
+                    Description = hostedEvent.Description,
+                    HostedDate = hostedEvent.HostedDate
+                };
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public bool UpdateEvent(int eventId, int memberId, string description, System.DateTime hostedDate)
+        {
+            try
+            {
+                var hostedEvent = GetOne<Event, int>(eventId);
+                hostedEvent.MemberId = memberId;
+                hostedEvent.Description = description;
+                hostedEvent.HostedDate = hostedDate;
+                hostedEvent.UpdatedDate = DateTime.Now;
+
+                Update(hostedEvent);
+
+                CommitChanges();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }
