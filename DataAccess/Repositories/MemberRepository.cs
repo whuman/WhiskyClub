@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WhiskyClub.DataAccess.Entities;
-using WhiskyClub.DataAccess.Repositories;
 
 namespace WhiskyClub.DataAccess.Repositories
 {
@@ -23,11 +20,11 @@ namespace WhiskyClub.DataAccess.Repositories
 
         public List<Models.Member> GetAllMembers()
         {
-            var items = from e in GetAll<Member>()
+            var items = from member in GetAll<Member>()
                         select new Models.Member
                                    {
-                                       MemberId = e.MemberId,
-                                       Name = e.Name
+                                       MemberId = member.MemberId,
+                                       Name = member.Name
                                    };
 
             return items.ToList();

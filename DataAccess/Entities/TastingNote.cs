@@ -12,22 +12,18 @@ namespace WhiskyClub.DataAccess.Entities
     using System;
     using System.Collections.Generic;
     
-    internal partial class Event
+    internal partial class TastingNote
     {
-    	public Event()
-    	{
-    		this.EventWhiskies = new HashSet<EventWhisky>();
-    	}
-    
-    	public int EventId { get; set; }
+    	public int TastingNoteId { get; set; }
+    	public int WhiskyId { get; set; }
     	public int MemberId { get; set; }
-    	public string Description { get; set; }
-    	public System.DateTime HostedDate { get; set; }
+    	public string Comment { get; set; }
+    	public byte[] Image { get; set; }
     	public byte[] Version { get; set; }
     	public System.DateTime InsertedDate { get; set; }
     	public System.DateTime UpdatedDate { get; set; }
     
     	public virtual Member Member { get; set; }
-    	public virtual ICollection<EventWhisky> EventWhiskies { get; set; }
+    	public virtual Whisky Whisky { get; set; }
     }
 }

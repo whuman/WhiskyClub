@@ -6,8 +6,15 @@
     <edmx:Diagrams>
       <Diagram DiagramId="ddabd3c497304762a546f3962e8eb6d4" Name="Diagram1" ZoomLevel="100">
         <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.Event" Width="1.5" PointX="3" PointY="1" />
-        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.Member" Width="1.5" PointX="0.75" PointY="1.125" />
+        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.Member" Width="1.5" PointX="0.75" PointY="1" />
         <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_Event_Member" />
+        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.EventWhisky" Width="1.5" PointX="5.5" PointY="1" />
+        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.TastingNote" Width="1.5" PointX="3" PointY="4.5" />
+        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.Whisky" Width="1.5" PointX="5.5" PointY="4.5" />
+        <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Event" />
+        <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Whisky" />
+        <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_TastingNote_Member" />
+        <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_TastingNote_Whisky" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

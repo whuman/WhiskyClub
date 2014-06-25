@@ -27,5 +27,8 @@ namespace WhiskyClub.DataAccess.Entities
     
     	public virtual DbSet<Event> Events { get; set; }
     	public virtual DbSet<Member> Members { get; set; }
+    	public virtual DbSet<EventWhisky> EventWhiskies { get; set; }
+    	public virtual DbSet<TastingNote> TastingNotes { get; set; }
+    	public virtual DbSet<Whisky> Whiskies { get; set; }
     }
 }
