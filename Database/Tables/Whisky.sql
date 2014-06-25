@@ -16,7 +16,7 @@ CREATE TABLE [dbo].[Whisky](
 	[Age] [int] NOT NULL,
 	[Description] [varchar](max) NOT NULL,
 	[Price] [money] NULL,
-	[BottleSize] [int] NULL,
+	[Volume] [int] NULL,
 	[Version] [timestamp] NOT NULL,
 	[InsertedDate] [datetime2](7) NOT NULL,
 	[UpdatedDate] [datetime2](7) NOT NULL,
