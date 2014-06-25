@@ -84,6 +84,7 @@
     </Compile>
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\Whisky.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

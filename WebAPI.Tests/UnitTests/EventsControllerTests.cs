@@ -19,6 +19,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
     {
         public IEventRepository EventRepo { get; set; }
         public IMemberRepository MemberRepo { get; set; }
+        public IWhiskyRepository WhiskyRepo { get; set; }
 
         [TestInitialize()]
         public void Initialize()
@@ -26,10 +27,11 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             // Arrange  
             EventRepo = MockRepository.GenerateMock<IEventRepository>();
             MemberRepo = MockRepository.GenerateMock<IMemberRepository>();
+            WhiskyRepo = MockRepository.GenerateMock<IWhiskyRepository>();
         }
 
         [TestMethod]
-        public void GetAll_ShouldReturnAllEventsWithoutMemberDetails()
+        public void GetAll_ShouldReturnAllEventsWithoutAdditionalDetails()
         {
             var mockedEventList = GetMockedEventList();
 
@@ -38,7 +40,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
                      .Return(mockedEventList);
 
             // Act
-            var eventsController = new EventsController(EventRepo, MemberRepo);
+            var eventsController = new EventsController(EventRepo, MemberRepo, WhiskyRepo);
             var result = eventsController.GetAll() as OkNegotiatedContentResult<IEnumerable<API.Event>>;
 
             // Assert
@@ -51,25 +53,30 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             Assert.IsNotNull(eventList);
             Assert.AreEqual(eventList.Count(), mockedEventList.Count, "Returned list item count does not match");
             Assert.IsNull(eventList.First().Member, "Event Member is not null.");
+            Assert.IsNull(eventList.First().Whiskies, "Event Whiskies list is not null");
         }
 
         [TestMethod]
-        public void Get_ShouldFindEventWithMemberDetails()
+        public void Get_ShouldFindEventWithAdditionalDetails()
         {
             var mockedEventList = GetMockedEventList();
             var mockedMemberList = GetMockedMemberList();
+            var mockedWhiskyList = GetMockedWhiskyList();
             var eventId = 3;
             var memberId = mockedEventList.First(me => me.EventId == eventId).MemberId; // Fetch the MemberId from the mockedEventList setup
-
+            
             // Arrange
             EventRepo.Stub(repo => repo.GetEvent(eventId))
                      .Return(mockedEventList.First(me => me.EventId == eventId));
 
             MemberRepo.Stub(repo => repo.GetMember(memberId))
-                    .Return(mockedMemberList.First(mh => mh.MemberId == memberId));
+                      .Return(mockedMemberList.First(mh => mh.MemberId == memberId));
+
+            WhiskyRepo.Stub(repo => repo.GetWhiskiesForEvent(eventId))
+                      .Return(mockedWhiskyList);
 
             // Act
-            var eventsController = new EventsController(EventRepo, MemberRepo);
+            var eventsController = new EventsController(EventRepo, MemberRepo, WhiskyRepo);
             var result = eventsController.Get(eventId) as OkNegotiatedContentResult<API.Event>;
 
             // Assert
@@ -81,6 +88,8 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             Assert.AreEqual(eventItem.EventId, eventId);
             Assert.IsNotNull(eventItem.Member, "Event Member is null.");
             Assert.AreEqual(eventItem.Member.MemberId, memberId);
+            Assert.IsNotNull(eventItem.Whiskies, "Event Whiskies is null.");
+            Assert.AreEqual(eventItem.Whiskies.Count, mockedWhiskyList.Count);
         }
 
         [TestMethod]
@@ -93,7 +102,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
                      .Throw(new NullReferenceException());
 
             // Act
-            var eventsController = new EventsController(EventRepo, MemberRepo);
+            var eventsController = new EventsController(EventRepo, MemberRepo, WhiskyRepo);
             var result = eventsController.Get(eventId) as NotFoundResult;
 
             // Assert
@@ -109,7 +118,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             EventRepo.Stub(repo => repo.InsertEvent(newEvent.MemberId, newEvent.Description, newEvent.HostedDate))
                      .Return(newEvent);
 
-            var hostedEventsController = new EventsController(EventRepo, MemberRepo);
+            var hostedEventsController = new EventsController(EventRepo, MemberRepo, WhiskyRepo);
             SetupControllerForTests(hostedEventsController);
 
             // Act 
@@ -128,7 +137,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         public void Post_ShouldReturnBadRequestForNullMember()
         {
             // Arrange
-            var eventsController = new EventsController(EventRepo, MemberRepo);
+            var eventsController = new EventsController(EventRepo, MemberRepo, WhiskyRepo);
 
             // Act 
             var result = eventsController.Post(null) as InvalidModelStateResult;
@@ -146,7 +155,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             EventRepo.Stub(repo => repo.UpdateEvent(existingEvent.EventId, existingEvent.MemberId, existingEvent.Description, existingEvent.HostedDate))
                      .Return(true);
 
-            var eventsController = new EventsController(EventRepo, MemberRepo);
+            var eventsController = new EventsController(EventRepo, MemberRepo, WhiskyRepo);
 
             // Act 
             var result = eventsController.Put(existingEvent.EventId, new API.Event { EventId = existingEvent.EventId, MemberId = existingEvent.MemberId, Description = existingEvent.Description, HostedDate = existingEvent.HostedDate }) as OkResult;
@@ -159,7 +168,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         public void Put_ShouldReturnBadRequestErrorMessageResultForDifferingId()
         {
             // Arrange
-            var eventsController = new EventsController(EventRepo, MemberRepo);
+            var eventsController = new EventsController(EventRepo, MemberRepo, WhiskyRepo);
 
             // Act
             var result = eventsController.Put(0, new API.Event { EventId = 1 }) as BadRequestErrorMessageResult;
@@ -172,7 +181,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         public void Put_ShouldReturnBadRequestForNullEvent()
         {
             // Arrange
-            var eventsController = new EventsController(EventRepo, MemberRepo);
+            var eventsController = new EventsController(EventRepo, MemberRepo, WhiskyRepo);
 
             // Act 
             var result = eventsController.Put(1, null) as InvalidModelStateResult;
@@ -190,7 +199,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             EventRepo.Stub(repo => repo.UpdateEvent(existingEvent.EventId, existingEvent.MemberId, existingEvent.Description, existingEvent.HostedDate))
                      .Return(false);
 
-            var eventsController = new EventsController(EventRepo, MemberRepo);
+            var eventsController = new EventsController(EventRepo, MemberRepo, WhiskyRepo);
 
             // Act 
             var result = eventsController.Put(existingEvent.EventId, new API.Event { EventId = existingEvent.EventId, MemberId = existingEvent.MemberId, Description = existingEvent.Description, HostedDate = existingEvent.HostedDate }) as NotFoundResult;
@@ -223,6 +232,17 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             return members;
         }
 
+        private List<DAL.Whisky> GetMockedWhiskyList()
+        {
+            var whiskies = new List<DAL.Whisky>();
+
+            whiskies.Add(GetMockedWhisky(3));
+            whiskies.Add(GetMockedWhisky(2));
+            whiskies.Add(GetMockedWhisky(1));
+
+            return whiskies;
+        }
+
         private DAL.Event GetMockedEvent(int eventId, int memberId)
         {
             return new DAL.Event
@@ -241,6 +261,16 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
                            MemberId = id,
                            Name = string.Format("Member {0}", id)
                        };
+        }
+
+        private DAL.Whisky GetMockedWhisky(int id)
+        {
+            return new DAL.Whisky
+            {
+                WhiskyId = id,
+                Name = string.Format("Whisky {0}", id)
+                // Don't really need to populate the rest of the fields here
+            };
         }
 
         private static void SetupControllerForTests(ApiController eventsController)

@@ -148,5 +148,25 @@ namespace WhiskyClub.DataAccess.Repositories
                 return false;
             }
         }
+        
+        public List<Models.Whisky> GetWhiskiesForEvent(int eventId)
+        {
+            var items = from eventWhisky in GetAll<EventWhisky>()
+                        where eventWhisky.EventId == eventId
+                        select new Models.Whisky
+                        {
+                            WhiskyId = eventWhisky.Whisky.WhiskyId,
+                            Name = eventWhisky.Whisky.Name,
+                            Brand = eventWhisky.Whisky.Brand,
+                            Age = eventWhisky.Whisky.Age,
+                            Country = eventWhisky.Whisky.Country,
+                            Region = eventWhisky.Whisky.Region,
+                            Description = eventWhisky.Whisky.Description,
+                            Price = eventWhisky.Whisky.Price,
+                            Volume = eventWhisky.Whisky.Volume
+                        };
+
+            return items.ToList();
+        }
     }
 }

@@ -15,10 +15,11 @@ namespace WhiskyClub.WebAPI.Controllers
     {
         public IEventRepository EventRepository { get; set; }
         public IMemberRepository MemberRepository { get; set; }
+        public IWhiskyRepository WhiskyRepository { get; set; }
 
-        public EventsController() : this(new EventRepository(), new MemberRepository()) { }
+        public EventsController() : this(new EventRepository(), new MemberRepository(), new WhiskyRepository()) { }
 
-        public EventsController(IEventRepository eventRepository, IMemberRepository membersRepository)
+        public EventsController(IEventRepository eventRepository, IMemberRepository membersRepository, IWhiskyRepository whiskRepository)
         {
             if (eventRepository == null)
             {
@@ -30,15 +31,21 @@ namespace WhiskyClub.WebAPI.Controllers
                 throw new ArgumentNullException("membersRepository");
             }
 
+            if (whiskRepository == null)
+            {
+                throw new ArgumentNullException("whiskRepository");
+            }
+
             EventRepository = eventRepository;
             MemberRepository = membersRepository;
+            WhiskyRepository = whiskRepository;
         }
 
         // GET api/<controller>
         public IHttpActionResult GetAll()
         {
+            // Do not return any additional event data (ie. Member info or Whiskies)
             var events = from e in EventRepository.GetAllEvents()
-                         //join h in MemberRepository.GetAllMembers() on e.MemberId equals h.MemberId
                          orderby e.HostedDate descending
                          select new Event
                                     {
@@ -56,21 +63,39 @@ namespace WhiskyClub.WebAPI.Controllers
         {
             try
             {
-                var eventModel = EventRepository.GetEvent(id);
+                var hostedEvent = EventRepository.GetEvent(id);
                 var item = new Event
                                {
-                                   EventId = eventModel.EventId,
-                                   MemberId = eventModel.MemberId,
-                                   Description = eventModel.Description,
-                                   HostedDate = eventModel.HostedDate
+                                   EventId = hostedEvent.EventId,
+                                   MemberId = hostedEvent.MemberId,
+                                   Description = hostedEvent.Description,
+                                   HostedDate = hostedEvent.HostedDate
                                };
 
-                var memberModel = MemberRepository.GetMember(eventModel.MemberId);
+                // Add additional data - Member info
+                var member = MemberRepository.GetMember(hostedEvent.MemberId);
                 item.Member = new Member
                                   {
-                                      MemberId = memberModel.MemberId,
-                                      Name = memberModel.Name
+                                      MemberId = member.MemberId,
+                                      Name = member.Name
                                   };
+
+                // Add additional data - list of Whiskies
+                var whiskies = from whisky in WhiskyRepository.GetWhiskiesForEvent(hostedEvent.EventId)
+                               select new Whisky
+                                          {
+                                              WhiskyId = whisky.WhiskyId,
+                                              Name = whisky.Name,
+                                              Brand = whisky.Brand,
+                                              Age = whisky.Age,
+                                              Country = whisky.Country,
+                                              Region = whisky.Region,
+                                              Description = whisky.Description,
+                                              Price = whisky.Price,
+                                              Volume = whisky.Volume
+                                          };
+
+                item.Whiskies = whiskies.ToList();
 
                 return Ok(item);
             }
