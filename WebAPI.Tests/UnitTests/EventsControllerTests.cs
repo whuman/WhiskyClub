@@ -110,7 +110,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         }
 
         [TestMethod]
-        public void Post_ShouldReturnWithCorrectDetails()
+        public void Post_ShouldReturnEventWithCorrectDetails()
         {
             var newEvent = GetMockedEvent(1, 1);
 
@@ -134,7 +134,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         }
 
         [TestMethod]
-        public void Post_ShouldReturnBadRequestForNullMember()
+        public void Post_ShouldReturnBadRequestForNullEvent()
         {
             // Arrange
             var eventsController = new EventsController(EventRepo, MemberRepo, WhiskyRepo);
@@ -147,7 +147,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         }
 
         [TestMethod]
-        public void Put_ShouldReturnOKRequest()
+        public void Put_ShouldReturnOKRequestForEventUpdate()
         {
             var existingEvent = GetMockedEvent(1, 1);
 
@@ -165,7 +165,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         }
 
         [TestMethod]
-        public void Put_ShouldReturnBadRequestErrorMessageResultForDifferingId()
+        public void Put_ShouldReturnBadRequestErrorMessageResultForDifferingEventId()
         {
             // Arrange
             var eventsController = new EventsController(EventRepo, MemberRepo, WhiskyRepo);
@@ -191,7 +191,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         }
 
         [TestMethod]
-        public void Put_ShouldReturnNotFoundForInvalidId()
+        public void Put_ShouldReturnNotFoundForInvalidEventId()
         {
             var existingEvent = GetMockedEvent(1, 1);
 

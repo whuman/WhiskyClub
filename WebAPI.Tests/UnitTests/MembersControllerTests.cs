@@ -96,7 +96,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         }
 
         [TestMethod]
-        public void Post_ShouldReturnWithCorrectDetails()
+        public void Post_ShouldReturnMemberWithCorrectDetails()
         {
             var newMember = GetMockedMember(1);
 
@@ -133,7 +133,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         }
 
         [TestMethod]
-        public void Put_ShouldReturnOKRequest()
+        public void Put_ShouldReturnOKRequestForMemberUpdate()
         {
             var existingMember = GetMockedMember(1);
 
@@ -151,7 +151,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         }
 
         [TestMethod]
-        public void Put_ShouldReturnBadRequestErrorMessageResultForDifferingId()
+        public void Put_ShouldReturnBadRequestErrorMessageResultForDifferingMemberId()
         {
             // Arrange
             var membersController = new MembersController(MemberRepo);
@@ -177,7 +177,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         }
 
         [TestMethod]
-        public void Put_ShouldReturnNotFoundForInvalidId()
+        public void Put_ShouldReturnNotFoundForInvalidMemberId()
         {
             var existingMember = GetMockedMember(1);
 

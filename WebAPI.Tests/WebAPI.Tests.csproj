@@ -69,6 +69,7 @@
     <Compile Include="Resources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTests\MembersControllerTests.cs" />
+    <Compile Include="UnitTests\WhiskiesControllerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataAccess\DataAccess.csproj">

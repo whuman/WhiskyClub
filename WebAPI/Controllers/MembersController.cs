@@ -25,11 +25,11 @@ namespace WhiskyClub.WebAPI.Controllers
         // GET api/<controller>
         public IHttpActionResult GetAll()
         {
-            var members = from h in MemberRepository.GetAllMembers()
+            var members = from member in MemberRepository.GetAllMembers()
                           select new Member
                                      {
-                                         MemberId = h.MemberId,
-                                         Name = h.Name
+                                         MemberId = member.MemberId,
+                                         Name = member.Name
                                      };
 
             return Ok(members);
@@ -40,11 +40,11 @@ namespace WhiskyClub.WebAPI.Controllers
         {
             try
             {
-                var memberModel = MemberRepository.GetMember(id);
+                var member = MemberRepository.GetMember(id);
                 var item = new Member
                                {
-                                   MemberId = memberModel.MemberId,
-                                   Name = memberModel.Name
+                                   MemberId = member.MemberId,
+                                   Name = member.Name
                                };
 
                 return Ok(item);
@@ -107,12 +107,10 @@ namespace WhiskyClub.WebAPI.Controllers
             var status = MemberRepository.DeleteMember(id);
             if (status)
             {
-                //return new HttpResponseMessage(HttpStatusCode.OK);
                 return Ok();
             }
             else
             {
-                //throw new HttpResponseException(HttpStatusCode.Conflict);
                 return Conflict();
             }
         }
