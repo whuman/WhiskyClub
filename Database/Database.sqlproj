@@ -67,5 +67,6 @@
     <None Include="Tables\Member.sql" />
     <None Include="Tables\Whisky.sql" />
     <None Include="Tables\WhiskyEvent.sql" />
+    <None Include="Tables\TastingNote.sql" />
   </ItemGroup>
 </Project>
