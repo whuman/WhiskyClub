@@ -100,6 +100,23 @@ namespace WhiskyClub.WebAPI.Controllers
             }
         }
 
+        // GET custom routing from whiskies
+        [Route("whiskies/{whiskyId}/events")]
+        [HttpGet]
+        public IHttpActionResult FindEventsForWhisky(int whiskyId)
+        {
+            var events = from e in EventRepository.GetEventsForWhisky(whiskyId)
+                         select new Event
+                                    {
+                                        EventId = e.EventId,
+                                        MemberId = e.MemberId,
+                                        Description = e.Description,
+                                        HostedDate = e.HostedDate
+                                    };
+
+            return Ok(events);
+        }
+
         // POST api/<controller>
         public IHttpActionResult Post([FromBody]Event hostedEvent)
         {
@@ -115,6 +132,23 @@ namespace WhiskyClub.WebAPI.Controllers
                 hostedEvent.EventId = newEvent.EventId;
 
                 return Created<Event>(string.Format("{0}/{1}", Request.RequestUri, hostedEvent.EventId), hostedEvent);
+            }
+            else
+            {
+                return Conflict();
+            }
+        }
+
+        // POST custom routing from whiskies
+        [Route("whiskies/{whiskyId}/events/{eventId}")]
+        [HttpPost]
+        public IHttpActionResult AddEventToWhisky(int eventId, int whiskyId)
+        {
+            var status = WhiskyRepository.AddEventWhisky(eventId, whiskyId);
+
+            if (status)
+            {
+                return Ok();
             }
             else
             {
@@ -145,5 +179,21 @@ namespace WhiskyClub.WebAPI.Controllers
                 return NotFound();
             }
         }
+
+        // DELETE custom routing from whiskies
+        [Route("whiskies/{whiskyId}/events/{eventId}")]
+        [HttpDelete]
+        public IHttpActionResult RemoveEventFromWhisky(int eventId, int whiskyId)
+        {
+            var status = WhiskyRepository.RemoveEventWhisky(eventId, whiskyId);
+            if (status)
+            {
+                return Ok();
+            }
+            else
+            {
+                return Conflict();
+            }
+        }        
     }
 }

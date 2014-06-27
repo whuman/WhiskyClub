@@ -44,6 +44,26 @@ namespace WhiskyClub.DataAccess.Repositories
             return items.ToList();
         }
 
+        public List<Models.Whisky> GetWhiskiesForEvent(int eventId)
+        {
+            var items = from ew in GetAll<EventWhisky>()
+                        where ew.EventId == eventId
+                        select new Models.Whisky
+                        {
+                            WhiskyId = ew.Whisky.WhiskyId,
+                            Name = ew.Whisky.Name,
+                            Brand = ew.Whisky.Brand,
+                            Age = ew.Whisky.Age,
+                            Country = ew.Whisky.Country,
+                            Region = ew.Whisky.Region,
+                            Description = ew.Whisky.Description,
+                            Price = ew.Whisky.Price,
+                            Volume = ew.Whisky.Volume
+                        };
+
+            return items.ToList();
+        }
+
         public Models.Whisky InsertWhisky(string name, string brand, int age, string country, string region, string description, decimal? price, int? volume)
         {
             try
@@ -148,25 +168,53 @@ namespace WhiskyClub.DataAccess.Repositories
                 return false;
             }
         }
-        
-        public List<Models.Whisky> GetWhiskiesForEvent(int eventId)
-        {
-            var items = from eventWhisky in GetAll<EventWhisky>()
-                        where eventWhisky.EventId == eventId
-                        select new Models.Whisky
-                        {
-                            WhiskyId = eventWhisky.Whisky.WhiskyId,
-                            Name = eventWhisky.Whisky.Name,
-                            Brand = eventWhisky.Whisky.Brand,
-                            Age = eventWhisky.Whisky.Age,
-                            Country = eventWhisky.Whisky.Country,
-                            Region = eventWhisky.Whisky.Region,
-                            Description = eventWhisky.Whisky.Description,
-                            Price = eventWhisky.Whisky.Price,
-                            Volume = eventWhisky.Whisky.Volume
-                        };
 
-            return items.ToList();
+        public bool AddEventWhisky(int eventId, int whiskyId)
+        {
+            try
+            {
+                var eventWhisky = new EventWhisky();
+                eventWhisky.EventId = eventId;
+                eventWhisky.WhiskyId = whiskyId;
+                eventWhisky.InsertedDate = DateTime.Now;
+
+                Insert(eventWhisky);
+
+                CommitChanges();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool RemoveEventWhisky(int eventId, int whiskyId)
+        {
+            try
+            {
+                try
+                {
+                    // As we do not have the EventWhiskyId (PK), we need to load the entity from the datastore before deleting
+                    var eventWhisky = GetAll<EventWhisky>().FirstOrDefault(ew => ew.EventId == eventId && ew.WhiskyId == whiskyId);
+
+                    // Yes this will break if we do not find the eventWhisky...
+                    Delete(eventWhisky);
+
+                    CommitChanges();
+
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

@@ -33,6 +33,21 @@ namespace WhiskyClub.DataAccess.Repositories
 
             return eventItems.ToList();
         }
+
+        public List<Models.Event> GetEventsForWhisky(int whiskyId)
+        {
+            var items = from ew in GetAll<EventWhisky>()
+                        where ew.WhiskyId == whiskyId
+                        select new Models.Event
+                        {
+                            EventId = ew.Event.EventId,
+                            MemberId = ew.Event.MemberId,
+                            Description = ew.Event.Description,
+                            HostedDate = ew.Event.HostedDate
+                        };
+
+            return items.ToList();
+        }
         
         public Models.Event InsertEvent(int memberId, string description, System.DateTime hostedDate)
         {
@@ -83,6 +98,6 @@ namespace WhiskyClub.DataAccess.Repositories
             {
                 return false;
             }
-        }
+        }        
     }
 }

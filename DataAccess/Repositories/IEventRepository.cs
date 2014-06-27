@@ -10,6 +10,8 @@ namespace WhiskyClub.DataAccess.Repositories
 
         List<Event> GetAllEvents();
 
+        List<Event> GetEventsForWhisky(int whiskyId);
+
         Event InsertEvent(int memberId, string description, DateTime hostedDate);
 
         bool UpdateEvent(int eventId, int memberId, string description, DateTime hostedDate);

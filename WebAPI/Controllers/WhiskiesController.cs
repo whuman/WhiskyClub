@@ -39,7 +39,7 @@ namespace WhiskyClub.WebAPI.Controllers
                                Region = whisky.Region,
                                Description = whisky.Description,
                                Price = whisky.Price,
-                               Volume = whisky.Volume                               
+                               Volume = whisky.Volume
                            };
 
             return Ok(whiskies);
@@ -61,7 +61,7 @@ namespace WhiskyClub.WebAPI.Controllers
                     Region = whisky.Region,
                     Description = whisky.Description,
                     Price = whisky.Price,
-                    Volume = whisky.Volume 
+                    Volume = whisky.Volume
                 };
 
                 // TODO : Load Event details for this whisky
@@ -72,6 +72,28 @@ namespace WhiskyClub.WebAPI.Controllers
             {
                 return NotFound();
             }
+        }
+
+        // GET custom routing from events
+        [Route("events/{eventId}/whiskies")]
+        [HttpGet]
+        public IHttpActionResult FindWhiskiesForEvent(int eventId)
+        {
+            var whiskies = from whisky in WhiskyRepository.GetWhiskiesForEvent(eventId)
+                           select new Whisky
+                           {
+                               WhiskyId = whisky.WhiskyId,
+                               Name = whisky.Name,
+                               Brand = whisky.Brand,
+                               Age = whisky.Age,
+                               Country = whisky.Country,
+                               Region = whisky.Region,
+                               Description = whisky.Description,
+                               Price = whisky.Price,
+                               Volume = whisky.Volume
+                           };
+
+            return Ok(whiskies);
         }
 
         // POST api/<controller>
@@ -89,6 +111,23 @@ namespace WhiskyClub.WebAPI.Controllers
                 whisky.WhiskyId = newWhisky.WhiskyId;
 
                 return Created<Whisky>(string.Format("{0}/{1}", Request.RequestUri, whisky.WhiskyId), whisky);
+            }
+            else
+            {
+                return Conflict();
+            }
+        }
+
+        // POST custom routing from events
+        [Route("events/{eventId}/whiskies/{whiskyId}")]
+        [HttpPost]
+        public IHttpActionResult AddWhiskyToEvent(int eventId, int whiskyId)
+        {
+            var status = WhiskyRepository.AddEventWhisky(eventId, whiskyId);
+
+            if (status)
+            {
+                return Ok();
             }
             else
             {
@@ -124,6 +163,22 @@ namespace WhiskyClub.WebAPI.Controllers
         public IHttpActionResult Delete(int id)
         {
             var status = WhiskyRepository.DeleteWhisky(id);
+            if (status)
+            {
+                return Ok();
+            }
+            else
+            {
+                return Conflict();
+            }
+        }
+
+        // DELETE custom routing from events
+        [Route("events/{eventId}/whiskies/{whiskyId}")]
+        [HttpDelete]
+        public IHttpActionResult RemoveWhiskyFromEvent(int eventId, int whiskyId)
+        {
+            var status = WhiskyRepository.RemoveEventWhisky(eventId, whiskyId);
             if (status)
             {
                 return Ok();
