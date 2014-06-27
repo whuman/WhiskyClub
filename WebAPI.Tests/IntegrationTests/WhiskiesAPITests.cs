@@ -33,11 +33,15 @@ namespace WhiskyClub.WebAPI.Tests.IntegrationTests
         [TestMethod]
         public void CRUD_Whiskies()
         {
-            var whisky = PostWhisky();
-            GetWhiskies();
-            GetWhisky(whisky);
-            Put(whisky);
-            Delete(whisky);
+            // These tests update the database and should be run manually
+            // Please ensure that your datastore is cleaned up afterwards
+            Assert.Inconclusive("Test must be run manually.");
+
+            ////var whisky = PostWhisky();
+            ////GetWhiskies();
+            ////GetWhisky(whisky);
+            ////Put(whisky);
+            ////Delete(whisky);
         }
 
         [TestCleanup]

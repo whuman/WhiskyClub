@@ -33,11 +33,15 @@ namespace WhiskyClub.WebAPI.Tests.IntegrationTests
         [TestMethod]
         public void CRUD_Members()
         {
-            var member = PostMember();
-            GetMembers();
-            GetMember(member);
-            Put(member);
-            Delete(member);
+            // These tests update the database and should be run manually
+            // Please ensure that your datastore is cleaned up afterwards
+            Assert.Inconclusive("Test must be run manually.");
+
+            ////var member = PostMember();
+            ////GetMembers();
+            ////GetMember(member);
+            ////Put(member);
+            ////Delete(member);
         }
 
         [TestCleanup]
