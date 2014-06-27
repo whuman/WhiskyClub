@@ -18,12 +18,14 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
     public class WhiskiesControllerTests
     {
         public IWhiskyRepository WhiskyRepo { get; set; }
+        public IEventRepository EventRepo { get; set; }
 
         [TestInitialize()]
         public void Initialize()
         {
             // Arrange
             WhiskyRepo = MockRepository.GenerateMock<IWhiskyRepository>();
+            EventRepo = MockRepository.GenerateMock<IEventRepository>();
         }
 
         [TestMethod]
@@ -35,7 +37,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             WhiskyRepo.Stub(repo => repo.GetAllWhiskies())
                       .Return(mockedWhiskyList);
 
-            var whiskiesController = new WhiskiesController(WhiskyRepo);
+            var whiskiesController = new WhiskiesController(WhiskyRepo, EventRepo);
 
             // Act
             var result = whiskiesController.GetAll() as OkNegotiatedContentResult<IEnumerable<API.Whisky>>;
@@ -52,16 +54,19 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         }
 
         [TestMethod]
-        public void Get_ShouldFindWhisky()
+        public void Get_ShouldFindWhiskyWithAdditionalDetails()
         {
             var mockedWhiskyList = GetMockedWhiskyList();
+            var mockedEventList = GetMockedEventList();
             var whiskyId = 3;
 
             // Arrange 
             WhiskyRepo.Stub(repo => repo.GetWhisky(whiskyId))
                       .Return(mockedWhiskyList.First(mh => mh.WhiskyId == whiskyId));
+            EventRepo.Stub(repo => repo.GetEventsForWhisky(whiskyId))
+                     .Return(mockedEventList);    // Should be three items
 
-            var whiskiesController = new WhiskiesController(WhiskyRepo);
+            var whiskiesController = new WhiskiesController(WhiskyRepo, EventRepo);
 
             // Act
             var result = whiskiesController.Get(whiskyId) as OkNegotiatedContentResult<API.Whisky>;
@@ -75,6 +80,8 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             var whisky = result.Content as API.Whisky;
             Assert.IsNotNull(whisky);
             Assert.AreEqual(whisky.WhiskyId, whiskyId);
+            Assert.IsNotNull(whisky.Events);
+            Assert.AreEqual(whisky.Events.Count, mockedEventList.Count);
         }
 
         [TestMethod]
@@ -86,7 +93,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             WhiskyRepo.Stub(repo => repo.GetWhisky(whiskyId))
                       .Throw(new NullReferenceException());
 
-            var whiskiesController = new WhiskiesController(WhiskyRepo);
+            var whiskiesController = new WhiskiesController(WhiskyRepo, EventRepo);
 
             // Act
             var result = whiskiesController.Get(whiskyId) as NotFoundResult;
@@ -104,7 +111,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             WhiskyRepo.Stub(repo => repo.InsertWhisky(newWhisky.Name, newWhisky.Brand, newWhisky.Age, newWhisky.Country, newWhisky.Region, newWhisky.Description, newWhisky.Price, newWhisky.Volume))
                       .Return(newWhisky);
 
-            var whiskiesController = new WhiskiesController(WhiskyRepo);
+            var whiskiesController = new WhiskiesController(WhiskyRepo, EventRepo);
             SetupControllerForTests(whiskiesController);
 
             // Act 
@@ -123,7 +130,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         public void Post_ShouldReturnBadRequestForNullWhisky()
         {
             // Arrange
-            var whiskiesController = new WhiskiesController(WhiskyRepo);
+            var whiskiesController = new WhiskiesController(WhiskyRepo, EventRepo);
 
             // Act 
             var result = whiskiesController.Post(null) as InvalidModelStateResult;
@@ -141,7 +148,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             WhiskyRepo.Stub(repo => repo.UpdateWhisky(existingWhisky.WhiskyId, existingWhisky.Name, existingWhisky.Brand, existingWhisky.Age, existingWhisky.Country, existingWhisky.Region, existingWhisky.Description, existingWhisky.Price, existingWhisky.Volume))
                       .Return(true);
 
-            var whiskiesController = new WhiskiesController(WhiskyRepo);
+            var whiskiesController = new WhiskiesController(WhiskyRepo, EventRepo);
 
             // Act 
             var result = whiskiesController.Put(existingWhisky.WhiskyId, new API.Whisky { WhiskyId = existingWhisky.WhiskyId, Name = existingWhisky.Name }) as OkResult;
@@ -154,7 +161,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         public void Put_ShouldReturnBadRequestErrorMessageResultForDifferingWhiskyId()
         {
             // Arrange
-            var whiskiesController = new WhiskiesController(WhiskyRepo);
+            var whiskiesController = new WhiskiesController(WhiskyRepo, EventRepo);
 
             // Act
             var result = whiskiesController.Put(0, new API.Whisky { WhiskyId = 1, Name = "Whisky Name" }) as BadRequestErrorMessageResult;
@@ -167,7 +174,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         public void Put_ShouldReturnBadRequestForNullWhisky()
         {
             // Arrange
-            var whiskiesController = new WhiskiesController(WhiskyRepo);
+            var whiskiesController = new WhiskiesController(WhiskyRepo, EventRepo);
 
             // Act 
             var result = whiskiesController.Put(0, null) as InvalidModelStateResult;
@@ -185,7 +192,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             WhiskyRepo.Stub(repo => repo.UpdateWhisky(existingWhisky.WhiskyId, existingWhisky.Name, existingWhisky.Brand, existingWhisky.Age, existingWhisky.Country, existingWhisky.Region, existingWhisky.Description, existingWhisky.Price, existingWhisky.Volume))
                       .Return(false);
 
-            var whiskiesController = new WhiskiesController(WhiskyRepo);
+            var whiskiesController = new WhiskiesController(WhiskyRepo, EventRepo);
 
             // Act 
             var result = whiskiesController.Put(existingWhisky.WhiskyId, new API.Whisky { WhiskyId = existingWhisky.WhiskyId, Name = existingWhisky.Name }) as NotFoundResult;
@@ -207,12 +214,32 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             return whiskies;
         }
 
+        private List<DAL.Event> GetMockedEventList()
+        {
+            var events = new List<DAL.Event>();
+
+            events.Add(GetMockedEvent(4));
+            events.Add(GetMockedEvent(5));
+            events.Add(GetMockedEvent(6));
+
+            return events;
+        }
+
         private DAL.Whisky GetMockedWhisky(int id)
         {
             return new DAL.Whisky
             {
                 WhiskyId = id,
                 Name = string.Format("Whisky {0}", id)
+            };
+        }
+
+        private DAL.Event GetMockedEvent(int id)
+        {
+            return new DAL.Event
+            {
+                EventId = id,
+                Description = string.Format("Event {0}", id)
             };
         }
 

@@ -12,17 +12,24 @@ namespace WhiskyClub.WebAPI.Controllers
     public class WhiskiesController : ApiController
     {
         public IWhiskyRepository WhiskyRepository { get; set; }
+        public IEventRepository EventRepository { get; set; }
 
-        public WhiskiesController() : this(new WhiskyRepository()) { }
+        public WhiskiesController() : this(new WhiskyRepository(), new EventRepository()) { }
 
-        public WhiskiesController(IWhiskyRepository whiskyRepository)
+        public WhiskiesController(IWhiskyRepository whiskyRepository, IEventRepository eventRepository)
         {
             if (whiskyRepository == null)
             {
                 throw new ArgumentNullException("whiskyRepository");
             }
 
+            if (eventRepository == null)
+            {
+                throw new ArgumentNullException("eventRepository");
+            }
+
             WhiskyRepository = whiskyRepository;
+            EventRepository = eventRepository;
         }
 
         // GET api/<controller>
@@ -64,7 +71,19 @@ namespace WhiskyClub.WebAPI.Controllers
                     Volume = whisky.Volume
                 };
 
-                // TODO : Load Event details for this whisky
+                // Add additional data - list of Events
+                var events = from e in EventRepository.GetEventsForWhisky(item.WhiskyId)
+                             select new Event
+                             {
+                                 EventId = e.EventId,
+                                 MemberId = e.MemberId,
+                                 Description = e.Description,
+                                 HostedDate = e.HostedDate
+                             };
+
+                item.Events = events.ToList();
+
+                // TODO : Add additional data - list of TastingNotes
 
                 return Ok(item);
             }
