@@ -46,7 +46,8 @@ namespace WhiskyClub.WebAPI.Controllers
                                Region = whisky.Region,
                                Description = whisky.Description,
                                Price = whisky.Price,
-                               Volume = whisky.Volume
+                               Volume = whisky.Volume,
+                               ImageUri = string.Format("{0}/{1}/image", Request.RequestUri, whisky.WhiskyId)
                            };
 
             return Ok(whiskies);
@@ -68,7 +69,8 @@ namespace WhiskyClub.WebAPI.Controllers
                     Region = whisky.Region,
                     Description = whisky.Description,
                     Price = whisky.Price,
-                    Volume = whisky.Volume
+                    Volume = whisky.Volume,
+                    ImageUri = string.Format("{0}/{1}/image", Request.RequestUri, whisky.WhiskyId)
                 };
 
                 // Add additional data - list of Events
@@ -109,7 +111,8 @@ namespace WhiskyClub.WebAPI.Controllers
                                Region = whisky.Region,
                                Description = whisky.Description,
                                Price = whisky.Price,
-                               Volume = whisky.Volume
+                               Volume = whisky.Volume,
+                               ImageUri = string.Format("{0}/{1}/image", Request.RequestUri, whisky.WhiskyId)
                            };
 
             return Ok(whiskies);

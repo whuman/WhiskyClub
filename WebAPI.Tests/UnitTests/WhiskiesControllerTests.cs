@@ -38,6 +38,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
                       .Return(mockedWhiskyList);
 
             var whiskiesController = new WhiskiesController(WhiskyRepo, EventRepo);
+            SetupControllerForTests(whiskiesController);
 
             // Act
             var result = whiskiesController.GetAll() as OkNegotiatedContentResult<IEnumerable<API.Whisky>>;
@@ -67,6 +68,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
                      .Return(mockedEventList);    // Should be three items
 
             var whiskiesController = new WhiskiesController(WhiskyRepo, EventRepo);
+            SetupControllerForTests(whiskiesController);
 
             // Act
             var result = whiskiesController.Get(whiskyId) as OkNegotiatedContentResult<API.Whisky>;
@@ -80,7 +82,8 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             var whisky = result.Content as API.Whisky;
             Assert.IsNotNull(whisky);
             Assert.AreEqual(whisky.WhiskyId, whiskyId);
-            Assert.IsNotNull(whisky.Events);
+            Assert.AreEqual(whisky.ImageUri, string.Format("{0}{1}/{2}/image", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Whiskies, whiskyId));  // Check ImageUri format is correct
+            Assert.IsNotNull(whisky.Events);    // Check populated events
             Assert.AreEqual(whisky.Events.Count, mockedEventList.Count);
         }
 
