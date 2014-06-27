@@ -59,14 +59,15 @@
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="Tables" />
     <Folder Include="Data Scripts" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Tables\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Tables\Event.sql" />
-    <None Include="Tables\Member.sql" />
-    <None Include="Tables\Whisky.sql" />
-    <None Include="Tables\WhiskyEvent.sql" />
-    <None Include="Tables\TastingNote.sql" />
+    <Build Include="dbo\Tables\Whisky.sql" />
+    <Build Include="dbo\Tables\TastingNote.sql" />
+    <Build Include="dbo\Tables\Member.sql" />
+    <Build Include="dbo\Tables\EventWhisky.sql" />
+    <Build Include="dbo\Tables\Event.sql" />
   </ItemGroup>
 </Project>
