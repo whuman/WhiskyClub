@@ -64,7 +64,7 @@ namespace WhiskyClub.DataAccess.Repositories
             return items.ToList();
         }
 
-        public Models.Whisky InsertWhisky(string name, string brand, int age, string country, string region, string description, decimal? price, int? volume)
+        public Models.Whisky InsertWhisky(string name, string brand, int? age, string country, string region, string description, decimal? price, int? volume)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace WhiskyClub.DataAccess.Repositories
             }
         }
 
-        public bool UpdateWhisky(int whiskyId, string name, string brand, int age, string country, string region, string description, decimal? price, int? volume)
+        public bool UpdateWhisky(int whiskyId, string name, string brand, int? age, string country, string region, string description, decimal? price, int? volume)
         {
             try
             {

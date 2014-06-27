@@ -10,9 +10,9 @@ namespace WhiskyClub.DataAccess.Repositories
 
         List<Whisky> GetAllWhiskies();
 
-        Whisky InsertWhisky(string name, string brand, int age, string country, string region, string description, decimal? price, int? volume);
+        Whisky InsertWhisky(string name, string brand, int? age, string country, string region, string description, decimal? price, int? volume);
 
-        bool UpdateWhisky(int whiskyId, string name, string brand, int age, string country, string region, string description, decimal? price, int? volume);
+        bool UpdateWhisky(int whiskyId, string name, string brand, int? age, string country, string region, string description, decimal? price, int? volume);
 
         bool DeleteWhisky(int whiskyId);
 

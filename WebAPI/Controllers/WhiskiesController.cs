@@ -145,7 +145,8 @@ namespace WhiskyClub.WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var newWhisky = WhiskyRepository.InsertWhisky(whisky.Name, whisky.Brand, whisky.Age, whisky.Country, whisky.Region, whisky.Description, whisky.Price, whisky.Volume);
+            var newWhisky = WhiskyRepository.InsertWhisky(
+                whisky.Name, whisky.Brand, whisky.Age, whisky.Country, whisky.Region, whisky.Description, whisky.Price, whisky.Volume);
 
             if (newWhisky != null)
             {

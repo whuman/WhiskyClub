@@ -1,17 +1,19 @@
 ﻿CREATE TABLE [dbo].[Whisky] (
-    [WhiskyId]     INT             IDENTITY (1, 1) NOT NULL,
-    [Name]         VARCHAR (50)    NOT NULL,
-    [Brand]        VARCHAR (50)    NOT NULL,
-    [Age]          INT             NOT NULL,
-    [Country]      VARCHAR (50)    NOT NULL,
-    [Region]       VARCHAR (50)    NOT NULL,
-    [Description]  VARCHAR (MAX)   NOT NULL,
-    [Image]        VARBINARY (MAX) NULL,
-    [Price]        DECIMAL (19, 4) NULL,
-    [Volume]       INT             NULL,
-    [Version]      BINARY (8)      NOT NULL,
-    [InsertedDate] DATETIME        NOT NULL,
-    [UpdatedDate]  DATETIME        NOT NULL,
+    [WhiskyId]     INT           IDENTITY (1, 1) NOT NULL,
+    [Name]         VARCHAR (50)  NOT NULL,
+    [Brand]        VARCHAR (50)  NOT NULL,
+    [Age]          INT           NULL,
+    [Country]      VARCHAR (50)  NOT NULL,
+    [Region]       VARCHAR (50)  NOT NULL,
+    [Description]  VARCHAR (MAX) NOT NULL,
+    [Image]        IMAGE         NULL,
+    [Price]        MONEY         NULL,
+    [Volume]       INT           NULL,
+    [Version]      ROWVERSION    NOT NULL,
+    [InsertedDate] DATETIME2 (7) CONSTRAINT [DF_Whisky_InsertedDate] DEFAULT (getdate()) NOT NULL,
+    [UpdatedDate]  DATETIME2 (7) CONSTRAINT [DF_Whisky_UpdatedDate] DEFAULT (getdate()) NOT NULL,
     CONSTRAINT [PK_Whisky] PRIMARY KEY CLUSTERED ([WhiskyId] ASC)
 );
+
+
 

@@ -12,10 +12,10 @@
           <Property Name="EventId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MemberId" Type="int" Nullable="false" />
           <Property Name="Description" Type="varchar" MaxLength="200" Nullable="false" />
-          <Property Name="HostedDate" Type="datetime" Nullable="false" />
-          <Property Name="Version" Type="binary" MaxLength="8" Nullable="false" />
-          <Property Name="InsertedDate" Type="datetime" Nullable="false" />
-          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+          <Property Name="HostedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Version" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="InsertedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
         <EntityType Name="EventWhisky">
           <Key>
@@ -24,8 +24,8 @@
           <Property Name="EventWhiskyId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="EventId" Type="int" Nullable="false" />
           <Property Name="WhiskyId" Type="int" Nullable="false" />
-          <Property Name="Version" Type="binary" MaxLength="8" Nullable="false" />
-          <Property Name="InsertedDate" Type="datetime" Nullable="false" />
+          <Property Name="Version" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="InsertedDate" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
         <EntityType Name="Member">
           <Key>
@@ -33,9 +33,9 @@
           </Key>
           <Property Name="MemberId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Version" Type="binary" MaxLength="8" Nullable="false" />
-          <Property Name="InsertedDate" Type="datetime" Nullable="false" />
-          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+          <Property Name="Version" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="InsertedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
         <EntityType Name="TastingNote">
           <Key>
@@ -45,10 +45,10 @@
           <Property Name="WhiskyId" Type="int" Nullable="false" />
           <Property Name="MemberId" Type="int" Nullable="false" />
           <Property Name="Comment" Type="varchar(max)" Nullable="false" />
-          <Property Name="Image" Type="varbinary(max)" />
-          <Property Name="Version" Type="binary" MaxLength="8" Nullable="false" />
-          <Property Name="InsertedDate" Type="datetime" Nullable="false" />
-          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+          <Property Name="Image" Type="image" />
+          <Property Name="Version" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="InsertedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
         <EntityType Name="Whisky">
           <Key>
@@ -57,16 +57,16 @@
           <Property Name="WhiskyId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Brand" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Age" Type="int" Nullable="false" />
+          <Property Name="Age" Type="int" />
           <Property Name="Country" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Region" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Description" Type="varchar(max)" Nullable="false" />
-          <Property Name="Image" Type="varbinary(max)" />
-          <Property Name="Price" Type="decimal" Precision="19" Scale="4" />
+          <Property Name="Image" Type="image" />
+          <Property Name="Price" Type="money" />
           <Property Name="Volume" Type="int" />
-          <Property Name="Version" Type="binary" MaxLength="8" Nullable="false" />
-          <Property Name="InsertedDate" Type="datetime" Nullable="false" />
-          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+          <Property Name="Version" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="InsertedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
         <Association Name="FK_Event_Member">
           <End Role="Member" Type="Self.Member" Multiplicity="1" />
@@ -193,10 +193,10 @@
           <Property Name="EventId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MemberId" Type="Int32" Nullable="false" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="HostedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="HostedDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" />
-          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
           <NavigationProperty Name="Member" Relationship="WhiskyClub.DataAccess.Entities.FK_Event_Member" FromRole="Event" ToRole="Member" />
           <NavigationProperty Name="EventWhiskies" Relationship="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Event" FromRole="Event" ToRole="EventWhisky" />
         </EntityType>
@@ -208,7 +208,7 @@
           <Property Name="EventId" Type="Int32" Nullable="false" />
           <Property Name="WhiskyId" Type="Int32" Nullable="false" />
           <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" />
-          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
           <NavigationProperty Name="Event" Relationship="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Event" FromRole="EventWhisky" ToRole="Event" />
           <NavigationProperty Name="Whisky" Relationship="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Whisky" FromRole="EventWhisky" ToRole="Whisky" />
         </EntityType>
@@ -219,8 +219,8 @@
           <Property Name="MemberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" />
-          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
           <NavigationProperty Name="Events" Relationship="WhiskyClub.DataAccess.Entities.FK_Event_Member" FromRole="Member" ToRole="Event" />
           <NavigationProperty Name="TastingNotes" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Member" FromRole="Member" ToRole="TastingNote" />
         </EntityType>
@@ -234,8 +234,8 @@
           <Property Name="Comment" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Image" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" />
-          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
           <NavigationProperty Name="Member" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Member" FromRole="TastingNote" ToRole="Member" />
           <NavigationProperty Name="Whisky" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Whisky" FromRole="TastingNote" ToRole="Whisky" />
         </EntityType>
@@ -246,7 +246,7 @@
           <Property Name="WhiskyId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Brand" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Age" Type="Int32" Nullable="false" />
+          <Property Name="Age" Type="Int32" />
           <Property Name="Country" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Region" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
@@ -254,8 +254,8 @@
           <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="Volume" Type="Int32" />
           <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" />
-          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
           <NavigationProperty Name="EventWhiskies" Relationship="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Whisky" FromRole="Whisky" ToRole="EventWhisky" />
           <NavigationProperty Name="TastingNotes" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Whisky" FromRole="Whisky" ToRole="TastingNote" />
         </EntityType>

@@ -13,8 +13,7 @@ namespace WhiskyClub.WebAPI.Models
         [Required]
         public string Brand { get; set; }
 
-        [Required]
-        public int Age { get; set; }
+        public int? Age { get; set; }
 
         [Required]
         public string Country { get; set; }
