@@ -16,7 +16,9 @@ namespace WhiskyClub.DataAccess.Repositories
 
         bool DeleteWhisky(int whiskyId);
 
-        bool UpdateImage(int whiskyId, byte[] image);
+        byte[] GetWhiskyImage(int whiskyId);
+
+        bool UpdateWhiskyImage(int whiskyId, byte[] image);
 
         List<Models.Whisky> GetWhiskiesForEvent(int eventId);
 

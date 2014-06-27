@@ -89,7 +89,26 @@ namespace WhiskyClub.WebAPI.Controllers
 
                 return Ok(item);
             }
-            catch (NullReferenceException)
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
+
+        // GET custom routing for image
+        [Route("whiskies/{whiskyId}/image")]
+        [HttpGet]
+        public IHttpActionResult FindImageForWhisky(int whiskyId)
+        {
+            // Not really sure this will work as it should be trying to serialize the byte array...
+            // Goping to trust in Web API magic here and see what happens.
+            var whiskyImage = WhiskyRepository.GetWhiskyImage(whiskyId);
+
+            if (whiskyImage != null || whiskyImage.Length > 0)
+            {
+                return Ok(whiskyImage);
+            }
+            else
             {
                 return NotFound();
             }
@@ -133,6 +152,24 @@ namespace WhiskyClub.WebAPI.Controllers
                 whisky.WhiskyId = newWhisky.WhiskyId;
 
                 return Created<Whisky>(string.Format("{0}/{1}", Request.RequestUri, whisky.WhiskyId), whisky);
+            }
+            else
+            {
+                return Conflict();
+            }
+        }
+
+        // POST custom routing for image
+        [Route("whiskies/{whiskyId}/image")]
+        [HttpPost]
+        public IHttpActionResult Post(int whiskyId)
+        {
+            byte[] imageArray = Request.Content.ReadAsByteArrayAsync().Result;
+
+            var status = WhiskyRepository.UpdateWhiskyImage(whiskyId, imageArray);
+            if (status)
+            {
+                return Ok();
             }
             else
             {
