@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="WhiskyClub.DataAccess.Entities.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="WhiskyClub.DataAccess.Entities.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Event">
           <Key>
             <PropertyRef Name="EventId" />
@@ -12,10 +12,10 @@
           <Property Name="EventId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MemberId" Type="int" Nullable="false" />
           <Property Name="Description" Type="varchar" MaxLength="200" Nullable="false" />
-          <Property Name="HostedDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="Version" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
-          <Property Name="InsertedDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="UpdatedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="HostedDate" Type="datetime" Nullable="false" />
+          <Property Name="Version" Type="binary" MaxLength="8" Nullable="false" />
+          <Property Name="InsertedDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="EventWhisky">
           <Key>
@@ -24,8 +24,8 @@
           <Property Name="EventWhiskyId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="EventId" Type="int" Nullable="false" />
           <Property Name="WhiskyId" Type="int" Nullable="false" />
-          <Property Name="Version" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
-          <Property Name="InsertedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Version" Type="binary" MaxLength="8" Nullable="false" />
+          <Property Name="InsertedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Member">
           <Key>
@@ -33,9 +33,9 @@
           </Key>
           <Property Name="MemberId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Version" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
-          <Property Name="InsertedDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="UpdatedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Version" Type="binary" MaxLength="8" Nullable="false" />
+          <Property Name="InsertedDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="TastingNote">
           <Key>
@@ -45,10 +45,10 @@
           <Property Name="WhiskyId" Type="int" Nullable="false" />
           <Property Name="MemberId" Type="int" Nullable="false" />
           <Property Name="Comment" Type="varchar(max)" Nullable="false" />
-          <Property Name="Image" Type="image" />
-          <Property Name="Version" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
-          <Property Name="InsertedDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="UpdatedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Image" Type="varbinary(max)" />
+          <Property Name="Version" Type="binary" MaxLength="8" Nullable="false" />
+          <Property Name="InsertedDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Whisky">
           <Key>
@@ -61,12 +61,12 @@
           <Property Name="Country" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Region" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Description" Type="varchar(max)" Nullable="false" />
-          <Property Name="Image" Type="image" />
-          <Property Name="Price" Type="money" />
+          <Property Name="Image" Type="varbinary(max)" />
+          <Property Name="Price" Type="decimal" Precision="19" Scale="4" />
           <Property Name="Volume" Type="int" />
-          <Property Name="Version" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
-          <Property Name="InsertedDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="UpdatedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Version" Type="binary" MaxLength="8" Nullable="false" />
+          <Property Name="InsertedDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <Association Name="FK_Event_Member">
           <End Role="Member" Type="Self.Member" Multiplicity="1" />
@@ -161,14 +161,14 @@
       <Schema Namespace="WhiskyClub.DataAccess.Entities" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="WhiskyClubContext" annotation:LazyLoadingEnabled="true" a:TypeAccess="Internal" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration">
           <EntitySet Name="Events" EntityType="WhiskyClub.DataAccess.Entities.Event" />
+          <EntitySet Name="EventWhiskies" EntityType="WhiskyClub.DataAccess.Entities.EventWhisky" />
           <EntitySet Name="Members" EntityType="WhiskyClub.DataAccess.Entities.Member" />
+          <EntitySet Name="TastingNotes" EntityType="WhiskyClub.DataAccess.Entities.TastingNote" />
+          <EntitySet Name="Whiskies" EntityType="WhiskyClub.DataAccess.Entities.Whisky" />
           <AssociationSet Name="FK_Event_Member" Association="WhiskyClub.DataAccess.Entities.FK_Event_Member">
             <End Role="Member" EntitySet="Members" />
             <End Role="Event" EntitySet="Events" />
           </AssociationSet>
-          <EntitySet Name="EventWhiskies" EntityType="WhiskyClub.DataAccess.Entities.EventWhisky" />
-          <EntitySet Name="TastingNotes" EntityType="WhiskyClub.DataAccess.Entities.TastingNote" />
-          <EntitySet Name="Whiskies" EntityType="WhiskyClub.DataAccess.Entities.Whisky" />
           <AssociationSet Name="FK_EventWhisky_Event" Association="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Event">
             <End Role="Event" EntitySet="Events" />
             <End Role="EventWhisky" EntitySet="EventWhiskies" />
@@ -193,37 +193,13 @@
           <Property Name="EventId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MemberId" Type="Int32" Nullable="false" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="HostedDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="HostedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" />
+          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Member" Relationship="WhiskyClub.DataAccess.Entities.FK_Event_Member" FromRole="Event" ToRole="Member" />
           <NavigationProperty Name="EventWhiskies" Relationship="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Event" FromRole="Event" ToRole="EventWhisky" />
         </EntityType>
-        <EntityType Name="Member">
-          <Key>
-            <PropertyRef Name="MemberId" />
-          </Key>
-          <Property Name="MemberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
-          <NavigationProperty Name="Events" Relationship="WhiskyClub.DataAccess.Entities.FK_Event_Member" FromRole="Member" ToRole="Event" />
-          <NavigationProperty Name="TastingNotes" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Member" FromRole="Member" ToRole="TastingNote" />
-        </EntityType>
-        <Association Name="FK_Event_Member">
-          <End Type="WhiskyClub.DataAccess.Entities.Member" Role="Member" Multiplicity="1" />
-          <End Type="WhiskyClub.DataAccess.Entities.Event" Role="Event" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Member">
-              <PropertyRef Name="MemberId" />
-            </Principal>
-            <Dependent Role="Event">
-              <PropertyRef Name="MemberId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="EventWhisky">
           <Key>
             <PropertyRef Name="EventWhiskyId" />
@@ -231,10 +207,22 @@
           <Property Name="EventWhiskyId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="EventId" Type="Int32" Nullable="false" />
           <Property Name="WhiskyId" Type="Int32" Nullable="false" />
-          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" />
+          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Event" Relationship="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Event" FromRole="EventWhisky" ToRole="Event" />
           <NavigationProperty Name="Whisky" Relationship="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Whisky" FromRole="EventWhisky" ToRole="Whisky" />
+        </EntityType>
+        <EntityType Name="Member">
+          <Key>
+            <PropertyRef Name="MemberId" />
+          </Key>
+          <Property Name="MemberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" />
+          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Events" Relationship="WhiskyClub.DataAccess.Entities.FK_Event_Member" FromRole="Member" ToRole="Event" />
+          <NavigationProperty Name="TastingNotes" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Member" FromRole="Member" ToRole="TastingNote" />
         </EntityType>
         <EntityType Name="TastingNote">
           <Key>
@@ -245,9 +233,9 @@
           <Property Name="MemberId" Type="Int32" Nullable="false" />
           <Property Name="Comment" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Image" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" />
+          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Member" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Member" FromRole="TastingNote" ToRole="Member" />
           <NavigationProperty Name="Whisky" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Whisky" FromRole="TastingNote" ToRole="Whisky" />
         </EntityType>
@@ -265,12 +253,24 @@
           <Property Name="Image" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="Volume" Type="Int32" />
-          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" />
+          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="EventWhiskies" Relationship="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Whisky" FromRole="Whisky" ToRole="EventWhisky" />
           <NavigationProperty Name="TastingNotes" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Whisky" FromRole="Whisky" ToRole="TastingNote" />
         </EntityType>
+        <Association Name="FK_Event_Member">
+          <End Type="WhiskyClub.DataAccess.Entities.Member" Role="Member" Multiplicity="1" />
+          <End Type="WhiskyClub.DataAccess.Entities.Event" Role="Event" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="MemberId" />
+            </Principal>
+            <Dependent Role="Event">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_EventWhisky_Event">
           <End Type="WhiskyClub.DataAccess.Entities.Event" Role="Event" Multiplicity="1" />
           <End Type="WhiskyClub.DataAccess.Entities.EventWhisky" Role="EventWhisky" Multiplicity="*" />
@@ -319,12 +319,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="WhiskyClubDataAccessEntitiesStoreContainer" CdmEntityContainer="WhiskyClubContext">
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="WhiskyClubDataAccessEntitiesStoreContainer" CdmEntityContainer="WhiskyClubContext">
           <EntitySetMapping Name="Events">
             <EntityTypeMapping TypeName="WhiskyClub.DataAccess.Entities.Event">
               <MappingFragment StoreEntitySet="Event">
@@ -338,17 +338,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Members">
-            <EntityTypeMapping TypeName="WhiskyClub.DataAccess.Entities.Member">
-              <MappingFragment StoreEntitySet="Member">
-                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-                <ScalarProperty Name="InsertedDate" ColumnName="InsertedDate" />
-                <ScalarProperty Name="Version" ColumnName="Version" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="EventWhiskies">
             <EntityTypeMapping TypeName="WhiskyClub.DataAccess.Entities.EventWhisky">
               <MappingFragment StoreEntitySet="EventWhisky">
@@ -357,6 +346,17 @@
                 <ScalarProperty Name="WhiskyId" ColumnName="WhiskyId" />
                 <ScalarProperty Name="EventId" ColumnName="EventId" />
                 <ScalarProperty Name="EventWhiskyId" ColumnName="EventWhiskyId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Members">
+            <EntityTypeMapping TypeName="WhiskyClub.DataAccess.Entities.Member">
+              <MappingFragment StoreEntitySet="Member">
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="InsertedDate" ColumnName="InsertedDate" />
+                <ScalarProperty Name="Version" ColumnName="Version" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -394,8 +394,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
         </EntityContainerMapping>
-      </Mapping>
-    </edmx:Mappings>
+</Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
   <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
@@ -407,7 +406,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />

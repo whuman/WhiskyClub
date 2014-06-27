@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Whisky] (
+﻿CREATE TABLE [dbo].[Whiskies] (
     [WhiskyId]     INT             IDENTITY (1, 1) NOT NULL,
     [Name]         VARCHAR (50)    NOT NULL,
     [Brand]        VARCHAR (50)    NOT NULL,
@@ -12,6 +12,6 @@
     [Version]      BINARY (8)      NOT NULL,
     [InsertedDate] DATETIME        NOT NULL,
     [UpdatedDate]  DATETIME        NOT NULL,
-    CONSTRAINT [PK_Whisky] PRIMARY KEY CLUSTERED ([WhiskyId] ASC)
+    CONSTRAINT [PK_Whiskies] PRIMARY KEY CLUSTERED ([WhiskyId] ASC)
 );
 

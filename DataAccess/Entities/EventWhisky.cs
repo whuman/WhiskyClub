@@ -9,7 +9,9 @@
 
 namespace WhiskyClub.DataAccess.Entities
 {
-
+    using System;
+    using System.Collections.Generic;
+    
     internal partial class EventWhisky
     {
     	public int EventWhiskyId { get; set; }

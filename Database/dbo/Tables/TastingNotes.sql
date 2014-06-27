@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[TastingNote] (
+﻿CREATE TABLE [dbo].[TastingNotes] (
     [TastingNoteId] INT             IDENTITY (1, 1) NOT NULL,
     [WhiskyId]      INT             NOT NULL,
     [MemberId]      INT             NOT NULL,
@@ -7,18 +7,18 @@
     [Version]       BINARY (8)      NOT NULL,
     [InsertedDate]  DATETIME        NOT NULL,
     [UpdatedDate]   DATETIME        NOT NULL,
-    CONSTRAINT [PK_TastingNote] PRIMARY KEY CLUSTERED ([TastingNoteId] ASC),
-    CONSTRAINT [FK_TastingNote_Member] FOREIGN KEY ([MemberId]) REFERENCES [dbo].[Member] ([MemberId]),
-    CONSTRAINT [FK_TastingNote_Whisky] FOREIGN KEY ([WhiskyId]) REFERENCES [dbo].[Whisky] ([WhiskyId])
+    CONSTRAINT [PK_TastingNotes] PRIMARY KEY CLUSTERED ([TastingNoteId] ASC),
+    CONSTRAINT [FK_TastingNote_Member] FOREIGN KEY ([MemberId]) REFERENCES [dbo].[Members] ([MemberId]),
+    CONSTRAINT [FK_TastingNote_Whisky] FOREIGN KEY ([WhiskyId]) REFERENCES [dbo].[Whiskies] ([WhiskyId])
 );
 
 
 GO
 CREATE NONCLUSTERED INDEX [IX_FK_TastingNote_Whisky]
-    ON [dbo].[TastingNote]([WhiskyId] ASC);
+    ON [dbo].[TastingNotes]([WhiskyId] ASC);
 
 
 GO
 CREATE NONCLUSTERED INDEX [IX_FK_TastingNote_Member]
-    ON [dbo].[TastingNote]([MemberId] ASC);
+    ON [dbo].[TastingNotes]([MemberId] ASC);
 
