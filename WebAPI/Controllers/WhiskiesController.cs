@@ -85,7 +85,7 @@ namespace WhiskyClub.WebAPI.Controllers
 
                 item.Events = events.ToList();
 
-                // TODO : Add additional data - list of TastingNotes
+                // TODO : Add additional data - list of Notes
 
                 return Ok(item);
             }

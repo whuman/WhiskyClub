@@ -12,9 +12,9 @@ namespace WhiskyClub.DataAccess.Entities
     using System;
     using System.Collections.Generic;
     
-    internal partial class TastingNote
+    internal partial class Note
     {
-    	public int TastingNoteId { get; set; }
+    	public int NoteId { get; set; }
     	public int WhiskyId { get; set; }
     	public int EventId { get; set; }
     	public int MemberId { get; set; }

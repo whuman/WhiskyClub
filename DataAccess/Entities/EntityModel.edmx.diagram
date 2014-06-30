@@ -12,10 +12,10 @@
         <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_Event_Member" />
         <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Event" />
         <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Whisky" />
-        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.TastingNote" Width="1.5" PointX="5.375" PointY="6.5" />
-        <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_TastingNote_Event" />
-        <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_TastingNote_Member" />
-        <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_TastingNote_Whisky" />
+        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.Note" Width="1.5" PointX="5.375" PointY="6.5" />
+        <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_Note_Event" />
+        <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_Note_Member" />
+        <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_Note_Whisky" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

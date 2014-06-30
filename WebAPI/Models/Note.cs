@@ -6,9 +6,9 @@ using System.Web;
 
 namespace WhiskyClub.WebAPI.Models
 {
-    public class TastingNote
+    public class Note
     {
-        public int TastingNoteId { get; set; }
+        public int NoteId { get; set; }
 
         [Required]
         public int WhiskyId { get; set; }

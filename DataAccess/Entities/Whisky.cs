@@ -17,7 +17,7 @@ namespace WhiskyClub.DataAccess.Entities
     	public Whisky()
     	{
     		this.EventWhiskies = new HashSet<EventWhisky>();
-    		this.TastingNotes = new HashSet<TastingNote>();
+    		this.Notes = new HashSet<Note>();
     	}
     
     	public int WhiskyId { get; set; }
@@ -35,6 +35,6 @@ namespace WhiskyClub.DataAccess.Entities
     	public System.DateTime UpdatedDate { get; set; }
     
     	public virtual ICollection<EventWhisky> EventWhiskies { get; set; }
-    	public virtual ICollection<TastingNote> TastingNotes { get; set; }
+    	public virtual ICollection<Note> Notes { get; set; }
     }
 }
