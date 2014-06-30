@@ -5,14 +5,15 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="ddabd3c497304762a546f3962e8eb6d4" Name="Diagram1" ZoomLevel="101">
-        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.Event" Width="1.5" PointX="8.25" PointY="7.25" />
-        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.EventWhisky" Width="1.5" PointX="8.375" PointY="2.625" />
-        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.Member" Width="1.5" PointX="3" PointY="7.25" />
-        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.TastingNote" Width="1.5" PointX="3" PointY="2.625" />
-        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.Whisky" Width="1.5" PointX="5.75" PointY="2.625" />
+        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.Event" Width="1.5" PointX="5.375" PointY="2.5" />
+        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.EventWhisky" Width="1.5" PointX="2.75" PointY="2.5" />
+        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.Member" Width="1.5" PointX="8" PointY="2.5" />
+        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.Whisky" Width="1.5" PointX="2.75" PointY="6.5" />
         <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_Event_Member" />
         <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Event" />
         <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Whisky" />
+        <EntityTypeShape EntityType="WhiskyClub.DataAccess.Entities.TastingNote" Width="1.5" PointX="5.375" PointY="6.5" />
+        <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_TastingNote_Event" />
         <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_TastingNote_Member" />
         <AssociationConnector Association="WhiskyClub.DataAccess.Entities.FK_TastingNote_Whisky" />
       </Diagram>

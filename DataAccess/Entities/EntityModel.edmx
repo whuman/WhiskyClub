@@ -43,6 +43,7 @@
           </Key>
           <Property Name="TastingNoteId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="WhiskyId" Type="int" Nullable="false" />
+          <Property Name="EventId" Type="int" Nullable="false" />
           <Property Name="MemberId" Type="int" Nullable="false" />
           <Property Name="Comment" Type="varchar(max)" Nullable="false" />
           <Property Name="Image" Type="image" />
@@ -104,6 +105,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_TastingNote_Event">
+          <End Role="Event" Type="Self.Event" Multiplicity="1" />
+          <End Role="TastingNote" Type="Self.TastingNote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="EventId" />
+            </Principal>
+            <Dependent Role="TastingNote">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_TastingNote_Member">
           <End Role="Member" Type="Self.Member" Multiplicity="1" />
           <End Role="TastingNote" Type="Self.TastingNote" Multiplicity="*" />
@@ -146,6 +159,10 @@
             <End Role="Whisky" EntitySet="Whisky" />
             <End Role="EventWhisky" EntitySet="EventWhisky" />
           </AssociationSet>
+          <AssociationSet Name="FK_TastingNote_Event" Association="Self.FK_TastingNote_Event">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="TastingNote" EntitySet="TastingNote" />
+          </AssociationSet>
           <AssociationSet Name="FK_TastingNote_Member" Association="Self.FK_TastingNote_Member">
             <End Role="Member" EntitySet="Member" />
             <End Role="TastingNote" EntitySet="TastingNote" />
@@ -163,7 +180,6 @@
           <EntitySet Name="Events" EntityType="WhiskyClub.DataAccess.Entities.Event" />
           <EntitySet Name="EventWhiskies" EntityType="WhiskyClub.DataAccess.Entities.EventWhisky" />
           <EntitySet Name="Members" EntityType="WhiskyClub.DataAccess.Entities.Member" />
-          <EntitySet Name="TastingNotes" EntityType="WhiskyClub.DataAccess.Entities.TastingNote" />
           <EntitySet Name="Whiskies" EntityType="WhiskyClub.DataAccess.Entities.Whisky" />
           <AssociationSet Name="FK_Event_Member" Association="WhiskyClub.DataAccess.Entities.FK_Event_Member">
             <End Role="Member" EntitySet="Members" />
@@ -177,6 +193,11 @@
             <End Role="Whisky" EntitySet="Whiskies" />
             <End Role="EventWhisky" EntitySet="EventWhiskies" />
           </AssociationSet>
+          <EntitySet Name="TastingNotes" EntityType="WhiskyClub.DataAccess.Entities.TastingNote" />
+          <AssociationSet Name="FK_TastingNote_Event" Association="WhiskyClub.DataAccess.Entities.FK_TastingNote_Event">
+            <End Role="Event" EntitySet="Events" />
+            <End Role="TastingNote" EntitySet="TastingNotes" />
+          </AssociationSet>
           <AssociationSet Name="FK_TastingNote_Member" Association="WhiskyClub.DataAccess.Entities.FK_TastingNote_Member">
             <End Role="Member" EntitySet="Members" />
             <End Role="TastingNote" EntitySet="TastingNotes" />
@@ -185,7 +206,7 @@
             <End Role="Whisky" EntitySet="Whiskies" />
             <End Role="TastingNote" EntitySet="TastingNotes" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <EntityType Name="Event">
           <Key>
             <PropertyRef Name="EventId" />
@@ -199,6 +220,7 @@
           <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
           <NavigationProperty Name="Member" Relationship="WhiskyClub.DataAccess.Entities.FK_Event_Member" FromRole="Event" ToRole="Member" />
           <NavigationProperty Name="EventWhiskies" Relationship="WhiskyClub.DataAccess.Entities.FK_EventWhisky_Event" FromRole="Event" ToRole="EventWhisky" />
+          <NavigationProperty Name="TastingNotes" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Event" FromRole="Event" ToRole="TastingNote" />
         </EntityType>
         <EntityType Name="EventWhisky">
           <Key>
@@ -223,21 +245,6 @@
           <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
           <NavigationProperty Name="Events" Relationship="WhiskyClub.DataAccess.Entities.FK_Event_Member" FromRole="Member" ToRole="Event" />
           <NavigationProperty Name="TastingNotes" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Member" FromRole="Member" ToRole="TastingNote" />
-        </EntityType>
-        <EntityType Name="TastingNote">
-          <Key>
-            <PropertyRef Name="TastingNoteId" />
-          </Key>
-          <Property Name="TastingNoteId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="WhiskyId" Type="Int32" Nullable="false" />
-          <Property Name="MemberId" Type="Int32" Nullable="false" />
-          <Property Name="Comment" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Image" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
-          <NavigationProperty Name="Member" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Member" FromRole="TastingNote" ToRole="Member" />
-          <NavigationProperty Name="Whisky" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Whisky" FromRole="TastingNote" ToRole="Whisky" />
         </EntityType>
         <EntityType Name="Whisky">
           <Key>
@@ -292,6 +299,35 @@
             </Principal>
             <Dependent Role="EventWhisky">
               <PropertyRef Name="WhiskyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="TastingNote">
+          <Key>
+            <PropertyRef Name="TastingNoteId" />
+          </Key>
+          <Property Name="TastingNoteId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WhiskyId" Type="Int32" Nullable="false" />
+          <Property Name="EventId" Type="Int32" Nullable="false" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" />
+          <Property Name="Comment" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Image" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Version" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="InsertedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="Event" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Event" FromRole="TastingNote" ToRole="Event" />
+          <NavigationProperty Name="Member" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Member" FromRole="TastingNote" ToRole="Member" />
+          <NavigationProperty Name="Whisky" Relationship="WhiskyClub.DataAccess.Entities.FK_TastingNote_Whisky" FromRole="TastingNote" ToRole="Whisky" />
+        </EntityType>
+        <Association Name="FK_TastingNote_Event">
+          <End Type="WhiskyClub.DataAccess.Entities.Event" Role="Event" Multiplicity="1" />
+          <End Type="WhiskyClub.DataAccess.Entities.TastingNote" Role="TastingNote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="EventId" />
+            </Principal>
+            <Dependent Role="TastingNote">
+              <PropertyRef Name="EventId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -360,20 +396,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TastingNotes">
-            <EntityTypeMapping TypeName="WhiskyClub.DataAccess.Entities.TastingNote">
-              <MappingFragment StoreEntitySet="TastingNote">
-                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-                <ScalarProperty Name="InsertedDate" ColumnName="InsertedDate" />
-                <ScalarProperty Name="Version" ColumnName="Version" />
-                <ScalarProperty Name="Image" ColumnName="Image" />
-                <ScalarProperty Name="Comment" ColumnName="Comment" />
-                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
-                <ScalarProperty Name="WhiskyId" ColumnName="WhiskyId" />
-                <ScalarProperty Name="TastingNoteId" ColumnName="TastingNoteId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Whiskies">
             <EntityTypeMapping TypeName="WhiskyClub.DataAccess.Entities.Whisky">
               <MappingFragment StoreEntitySet="Whisky">
@@ -390,6 +412,21 @@
                 <ScalarProperty Name="Brand" ColumnName="Brand" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="WhiskyId" ColumnName="WhiskyId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TastingNotes">
+            <EntityTypeMapping TypeName="WhiskyClub.DataAccess.Entities.TastingNote">
+              <MappingFragment StoreEntitySet="TastingNote">
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="InsertedDate" ColumnName="InsertedDate" />
+                <ScalarProperty Name="Version" ColumnName="Version" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="EventId" ColumnName="EventId" />
+                <ScalarProperty Name="WhiskyId" ColumnName="WhiskyId" />
+                <ScalarProperty Name="TastingNoteId" ColumnName="TastingNoteId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -16,6 +16,7 @@ namespace WhiskyClub.DataAccess.Entities
     {
     	public int TastingNoteId { get; set; }
     	public int WhiskyId { get; set; }
+    	public int EventId { get; set; }
     	public int MemberId { get; set; }
     	public string Comment { get; set; }
     	public byte[] Image { get; set; }
@@ -23,6 +24,7 @@ namespace WhiskyClub.DataAccess.Entities
     	public System.DateTime InsertedDate { get; set; }
     	public System.DateTime UpdatedDate { get; set; }
     
+    	public virtual Event Event { get; set; }
     	public virtual Member Member { get; set; }
     	public virtual Whisky Whisky { get; set; }
     }

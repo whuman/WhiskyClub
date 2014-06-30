@@ -80,14 +80,17 @@
     </Compile>
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\TastingNote.cs" />
     <Compile Include="Models\Whisky.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\EntityFrameworkRepositoryBase.cs" />
     <Compile Include="Repositories\EventRepository.cs" />
+    <Compile Include="Repositories\ITastingNoteRepository.cs" />
     <Compile Include="Repositories\IWhiskyRepository.cs" />
     <Compile Include="Repositories\MemberRepository.cs" />
     <Compile Include="Repositories\IEventRepository.cs" />
     <Compile Include="Repositories\IMemberRepository.cs" />
+    <Compile Include="Repositories\TastingNoteRepository.cs" />
     <Compile Include="Repositories\WhiskyRepository.cs" />
   </ItemGroup>
   <ItemGroup>
