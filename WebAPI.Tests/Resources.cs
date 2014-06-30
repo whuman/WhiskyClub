@@ -8,5 +8,7 @@ namespace WhiskyClub.WebAPI.Tests
         public const string Members = "members";
 
         public const string Whiskies = "whiskies";
+
+        public const string TastingNotes = "tastingnotes";
     }
 }

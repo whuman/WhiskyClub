@@ -81,12 +81,14 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Controllers\TastingNotesController.cs" />
     <Compile Include="Controllers\WhiskiesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\TastingNote.cs" />
     <Compile Include="Models\Whisky.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
