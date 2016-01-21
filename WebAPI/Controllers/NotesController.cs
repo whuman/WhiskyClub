@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using WhiskyClub.DataAccess.Repositories;
 using WhiskyClub.WebAPI.Models;
@@ -11,7 +8,7 @@ namespace WhiskyClub.WebAPI.Controllers
 {
     public class NotesController : ApiController
     {
-        public INoteRepository NoteRepository { get; set; }
+        private INoteRepository NoteRepository { get; }
 
         public NotesController() : this(new NoteRepository()) { }
 
@@ -19,7 +16,7 @@ namespace WhiskyClub.WebAPI.Controllers
         {
             if (noteRepository == null)
             {
-                throw new ArgumentNullException("noteRepository");
+                throw new ArgumentNullException(nameof(noteRepository));
             }
 
             NoteRepository = noteRepository;
@@ -36,7 +33,7 @@ namespace WhiskyClub.WebAPI.Controllers
                                    EventId = note.EventId,
                                    MemberId = note.MemberId,
                                    Comment = note.Comment,
-                                   ImageUri = string.Format("{0}/{1}/image", Request.RequestUri, note.NoteId)
+                                   ImageUri = $"{Request.RequestUri}/{note.NoteId}/image"
                                };
 
             return Ok(notes);
@@ -55,18 +52,11 @@ namespace WhiskyClub.WebAPI.Controllers
                     EventId = note.EventId,
                     MemberId = note.MemberId,
                     Comment = note.Comment,
-                    ImageUri = string.Format("{0}/{1}/image", Request.RequestUri, note.NoteId)
+                    ImageUri = $"{Request.RequestUri}/{note.NoteId}/image",
+                    Whisky = null,  // TODO Add additional data - Whisky info
+                    Event = null,   // TODO Add additional data - Event info
+                    Member = null   // TODO Add additional data - Member info
                 };
-
-                // TODO Add additional data - Whisky info
-                item.Whisky = null;
-
-                // TODO Add additional data - Event info
-                item.Event = null;
-
-                // TODO Add additional data - Member info
-                item.Member = null;
-
                 return Ok(item);
             }
             catch (Exception)
@@ -82,7 +72,7 @@ namespace WhiskyClub.WebAPI.Controllers
         {
             var noteImage = NoteRepository.GetNoteImage(noteId);
 
-            if (noteImage != null || noteImage.Length > 0)
+            if (noteImage != null && noteImage.Length > 0)
             {
                 return Ok(noteImage);
             }
@@ -105,7 +95,7 @@ namespace WhiskyClub.WebAPI.Controllers
                                    EventId = note.EventId,
                                    MemberId = note.MemberId,
                                    Comment = note.Comment,
-                                   ImageUri = string.Format("{0}/{1}/image", Request.RequestUri, note.NoteId)
+                                   ImageUri = $"{Request.RequestUri}/{note.NoteId}/image"
                                };
 
             return Ok(notes);
@@ -125,7 +115,7 @@ namespace WhiskyClub.WebAPI.Controllers
             {
                 note.NoteId = newNote.NoteId;
 
-                return Created<Note>(string.Format("{0}/{1}", Request.RequestUri, note.NoteId), note);
+                return Created($"{Request.RequestUri}/{note.NoteId}", note);
             }
             else
             {

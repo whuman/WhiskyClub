@@ -8,9 +8,9 @@ namespace WhiskyClub.WebAPI.Controllers
 {
     public class EventsController : ApiController
     {
-        public IEventRepository EventRepository { get; set; }
-        public IMemberRepository MemberRepository { get; set; }
-        public IWhiskyRepository WhiskyRepository { get; set; }
+        private IEventRepository EventRepository { get; }
+        private IMemberRepository MemberRepository { get; }
+        private IWhiskyRepository WhiskyRepository { get; }
 
         public EventsController() : this(new EventRepository(), new MemberRepository(), new WhiskyRepository()) { }
 
@@ -18,17 +18,17 @@ namespace WhiskyClub.WebAPI.Controllers
         {
             if (eventRepository == null)
             {
-                throw new ArgumentNullException("eventRepository");
+                throw new ArgumentNullException(nameof(eventRepository));
             }
 
             if (membersRepository == null)
             {
-                throw new ArgumentNullException("membersRepository");
+                throw new ArgumentNullException(nameof(membersRepository));
             }
 
             if (whiskRepository == null)
             {
-                throw new ArgumentNullException("whiskRepository");
+                throw new ArgumentNullException(nameof(whiskRepository));
             }
 
             EventRepository = eventRepository;
@@ -131,7 +131,8 @@ namespace WhiskyClub.WebAPI.Controllers
             {
                 hostedEvent.EventId = newEvent.EventId;
 
-                return Created<Event>(string.Format("{0}/{1}", Request.RequestUri, hostedEvent.EventId), hostedEvent);
+                //return Created(string.Format("{0}/{1}", Request.RequestUri, hostedEvent.EventId), hostedEvent);
+                return Created($"{Request.RequestUri}/{hostedEvent.EventId}", hostedEvent);
             }
             else
             {

@@ -8,7 +8,7 @@ namespace WhiskyClub.WebAPI.Controllers
 {
     public class MembersController : ApiController
     {
-        public IMemberRepository MemberRepository { get; set; }
+        private IMemberRepository MemberRepository { get; }
 
         public MembersController() : this(new MemberRepository()) { }
 
@@ -16,7 +16,7 @@ namespace WhiskyClub.WebAPI.Controllers
         {
             if (memberRepository == null)
             {
-                throw new ArgumentNullException("memberRepository");
+                throw new ArgumentNullException(nameof(memberRepository));
             }
 
             MemberRepository = memberRepository;
@@ -69,7 +69,7 @@ namespace WhiskyClub.WebAPI.Controllers
             {
                 member.MemberId = newMember.MemberId;
 
-                return Created<Member>(string.Format("{0}/{1}", Request.RequestUri, member.MemberId), member);
+                return Created($"{Request.RequestUri}/{member.MemberId}", member);
             }
             else
             {

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using WhiskyClub.DataAccess.Repositories;
 using WhiskyClub.WebAPI.Models;
@@ -11,8 +8,8 @@ namespace WhiskyClub.WebAPI.Controllers
 {
     public class WhiskiesController : ApiController
     {
-        public IWhiskyRepository WhiskyRepository { get; set; }
-        public IEventRepository EventRepository { get; set; }
+        private IWhiskyRepository WhiskyRepository { get; }
+        private IEventRepository EventRepository { get; }
 
         public WhiskiesController() : this(new WhiskyRepository(), new EventRepository()) { }
 
@@ -20,12 +17,12 @@ namespace WhiskyClub.WebAPI.Controllers
         {
             if (whiskyRepository == null)
             {
-                throw new ArgumentNullException("whiskyRepository");
+                throw new ArgumentNullException(nameof(whiskyRepository));
             }
 
             if (eventRepository == null)
             {
-                throw new ArgumentNullException("eventRepository");
+                throw new ArgumentNullException(nameof(eventRepository));
             }
 
             WhiskyRepository = whiskyRepository;
@@ -47,7 +44,7 @@ namespace WhiskyClub.WebAPI.Controllers
                                Description = whisky.Description,
                                Price = whisky.Price,
                                Volume = whisky.Volume,
-                               ImageUri = string.Format("{0}/{1}/image", Request.RequestUri, whisky.WhiskyId)
+                               ImageUri = $"{Request.RequestUri}/{whisky.WhiskyId}/image"
                            };
 
             return Ok(whiskies);
@@ -70,7 +67,7 @@ namespace WhiskyClub.WebAPI.Controllers
                     Description = whisky.Description,
                     Price = whisky.Price,
                     Volume = whisky.Volume,
-                    ImageUri = string.Format("{0}/{1}/image", Request.RequestUri, whisky.WhiskyId)
+                    ImageUri = $"{Request.RequestUri}/{whisky.WhiskyId}/image"
                 };
 
                 // Add additional data - list of Events
@@ -104,7 +101,7 @@ namespace WhiskyClub.WebAPI.Controllers
             // Goping to trust in Web API magic here and see what happens.
             var whiskyImage = WhiskyRepository.GetWhiskyImage(whiskyId);
 
-            if (whiskyImage != null || whiskyImage.Length > 0)
+            if (whiskyImage != null && whiskyImage.Length > 0)
             {
                 return Ok(whiskyImage);
             }
@@ -152,7 +149,7 @@ namespace WhiskyClub.WebAPI.Controllers
             {
                 whisky.WhiskyId = newWhisky.WhiskyId;
 
-                return Created<Whisky>(string.Format("{0}/{1}", Request.RequestUri, whisky.WhiskyId), whisky);
+                return Created($"{Request.RequestUri}/{whisky.WhiskyId}", whisky);
             }
             else
             {
