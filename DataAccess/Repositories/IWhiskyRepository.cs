@@ -20,7 +20,7 @@ namespace WhiskyClub.DataAccess.Repositories
 
         bool UpdateWhiskyImage(int whiskyId, byte[] image);
 
-        List<Models.Whisky> GetWhiskiesForEvent(int eventId);
+        List<Whisky> GetWhiskiesForEvent(int eventId);
 
         bool AddEventWhisky(int eventId, int whiskyId);
 

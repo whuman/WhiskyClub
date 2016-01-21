@@ -17,7 +17,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
     [TestClass]
     public class MembersControllerTests
     {
-        public IMemberRepository MemberRepo { get; set; }
+        private IMemberRepository MemberRepo { get; set; }
 
         [TestInitialize()]
         public void Initialize()
@@ -45,7 +45,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
 
             Assert.IsNotNull(result, "Result was not of the correct type.");
 
-            var memberList = result.Content as IEnumerable<API.Member>;
+            var memberList = result.Content;
 
             Assert.IsNotNull(memberList);
             Assert.AreEqual(memberList.Count(), mockedMemberList.Count, "Returned list item count does not match");
@@ -72,7 +72,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
 
             Assert.IsNotNull(result, "Result was not of the correct type.");
 
-            var member = result.Content as API.Member;
+            var member = result.Content;
             Assert.IsNotNull(member);
             Assert.AreEqual(member.MemberId, memberId);
         }
@@ -113,10 +113,11 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             // Assert
             Assert.IsNotNull(result, "Result was not of the correct type.");
 
-            var member = result.Content as API.Member;
+            var member = result.Content;
             Assert.IsNotNull(member);
             Assert.AreEqual(member.MemberId, newMember.MemberId);
-            Assert.AreEqual(result.Location.ToString(), string.Format("{0}{1}/{2}", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Members, newMember.MemberId));
+            Assert.AreEqual(result.Location.ToString(),
+                $"{ConfigurationManager.AppSettings["BaseApiUri"]}{Resources.Members}/{newMember.MemberId}");
         }
 
         [TestMethod]
@@ -198,12 +199,8 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
 
         private List<DAL.Member> GetMockedMemberList()
         {
-            var members = new List<DAL.Member>();
-
-            members.Add(GetMockedMember(3));
-            members.Add(GetMockedMember(2));
-            members.Add(GetMockedMember(1));
-
+            var members = new List<DAL.Member> {GetMockedMember(3), GetMockedMember(2), GetMockedMember(1)};
+            
             return members;
         }
 
@@ -212,7 +209,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             return new DAL.Member
                        {
                            MemberId = id,
-                           Name = string.Format("Member {0}", id)
+                           Name = $"Member {id}"
                        };
         }
 
@@ -220,7 +217,8 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         {
             membersController.Request = new HttpRequestMessage();
             membersController.Request.SetConfiguration(new HttpConfiguration());
-            membersController.Request.RequestUri = new Uri(string.Format("{0}{1}", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Members));
+            membersController.Request.RequestUri = new Uri(
+                $"{ConfigurationManager.AppSettings["BaseApiUri"]}{Resources.Members}");
         }
 
         #endregion

@@ -10,11 +10,11 @@ using WhiskyClub.WebAPI.Models;
 namespace WhiskyClub.WebAPI.Tests.IntegrationTests
 {
     [TestClass]
-    public class MembersAPITests
+    public class MembersApiTests
     {
         private HttpClient _client;
 
-        public HttpClient Client
+        private HttpClient Client
         {
             get
             {
@@ -55,7 +55,7 @@ namespace WhiskyClub.WebAPI.Tests.IntegrationTests
             // Arrange
             var postMember = new Member()
                              {
-                                 Name = string.Format("Test Member POST {0:yyyyMMddHHmmss}", DateTime.Now)
+                                 Name = $"Test Member POST {DateTime.Now:yyyyMMddHHmmss}"
                              };
 
             // Act 
@@ -95,7 +95,7 @@ namespace WhiskyClub.WebAPI.Tests.IntegrationTests
             var putMember = new Member()
                                 {
                                     MemberId = member.MemberId,
-                                    Name = string.Format("Test Member PUT {0:yyyyMMddHHmmss}", DateTime.Now)
+                                    Name = $"Test Member PUT {DateTime.Now:yyyyMMddHHmmss}"
                                 };
 
             // Act 
@@ -119,7 +119,7 @@ namespace WhiskyClub.WebAPI.Tests.IntegrationTests
 
         private static string GetMemberRequestUri(Member member)
         {
-            return string.Format("{0}/{1}", Resources.Members, member.MemberId);
+            return $"{Resources.Members}/{member.MemberId}";
         }
     }
 }

@@ -17,7 +17,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
     [TestClass]
     public class NotesControllerTests
     {
-        public INoteRepository NoteRepo { get; set; }
+        private INoteRepository NoteRepo { get; set; }
 
         [TestInitialize()]
         public void Initialize()
@@ -46,10 +46,10 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
 
             Assert.IsNotNull(result, "Result was not of the correct type.");
 
-            var noteList = result.Content as IEnumerable<API.Note>;
+            var noteList = result.Content as IList<API.Note>;
 
             Assert.IsNotNull(noteList);
-            Assert.AreEqual(noteList.Count(), mockedNoteList.Count, "Returned list item count does not match");
+            Assert.AreEqual(noteList.Count, mockedNoteList.Count, "Returned list item count does not match");
             Assert.IsNull(noteList.First().Whisky, "Note Whisky is not null");
             Assert.IsNull(noteList.First().Event, "Note Event is not null");
             Assert.IsNull(noteList.First().Member, "Note Member is not null.");
@@ -62,9 +62,9 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             var noteId = 3;
 
             var mockedNote = mockedNoteList.First(tn => tn.NoteId == noteId);
-            var mockedWhisky = GetMockedWhisky(mockedNote.WhiskyId);
-            var mockedEvent = GetMockedEvent(mockedNote.EventId);
-            var mockedMember = GetMockedMember(mockedNote.MemberId);
+            //var mockedWhisky = GetMockedWhisky(mockedNote.WhiskyId);
+            //var mockedEvent = GetMockedEvent(mockedNote.EventId);
+            //var mockedMember = GetMockedMember(mockedNote.MemberId);
 
             // Arrange 
             NoteRepo.Stub(repo => repo.GetNote(noteId))
@@ -79,10 +79,11 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             // Assert
             Assert.IsNotNull(result, "Result was not of the correct type.");
 
-            var note = result.Content as API.Note;
+            var note = result.Content;
             Assert.IsNotNull(note);
             Assert.AreEqual(note.NoteId, noteId);
-            Assert.AreEqual(note.ImageUri, string.Format("{0}{1}/{2}/image", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Notes, noteId));  // Check ImageUri format is correct            
+            Assert.AreEqual(note.ImageUri,
+                $"{ConfigurationManager.AppSettings["BaseApiUri"]}{Resources.Notes}/{noteId}/image");  // Check ImageUri format is correct            
             Assert.Inconclusive("Additional details are not implemented");
             ////Assert.AreEqual(note.Whisky, mockedWhisky);   // Check that additional info is populated
             ////Assert.AreEqual(note.Event, mockedEvent);     // Check that additional info is populated
@@ -125,10 +126,11 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             // Assert
             Assert.IsNotNull(result, "Result was not of the correct type.");
 
-            var note = result.Content as API.Note;
+            var note = result.Content;
             Assert.IsNotNull(note);
             Assert.AreEqual(note.NoteId, newNote.NoteId);
-            Assert.AreEqual(result.Location.ToString(), string.Format("{0}{1}/{2}", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Notes, newNote.NoteId));
+            Assert.AreEqual(result.Location.ToString(),
+                $"{ConfigurationManager.AppSettings["BaseApiUri"]}{Resources.Notes}/{newNote.NoteId}");
         }
 
         [TestMethod]
@@ -210,11 +212,12 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
 
         private List<DAL.Note> GetMockedNoteList()
         {
-            var notes = new List<DAL.Note>();
-
-            notes.Add(GetMockedNote(1, 1, 2, 3));
-            notes.Add(GetMockedNote(2, 4, 5, 6));
-            notes.Add(GetMockedNote(3, 7, 8, 9));
+            var notes = new List<DAL.Note>
+            {
+                GetMockedNote(1, 1, 2, 3),
+                GetMockedNote(2, 4, 5, 6),
+                GetMockedNote(3, 7, 8, 9)
+            };
 
             return notes;
         }
@@ -227,7 +230,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
                 WhiskyId = whiskyId,
                 EventId = eventId,
                 MemberId = memberId,
-                Comment = string.Format("Note {0}-{1}-{2}-{3}", noteId, whiskyId, eventId, memberId)
+                Comment = $"Note {noteId}-{whiskyId}-{eventId}-{memberId}"
             };
         }
 
@@ -236,7 +239,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             return new DAL.Whisky
             {
                 WhiskyId = id,
-                Name = string.Format("Whisky {0}", id)
+                Name = $"Whisky {id}"
             };
         }
 
@@ -245,7 +248,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             return new DAL.Event
             {
                 EventId = id,
-                Description = string.Format("Event {0}", id)
+                Description = $"Event {id}"
             };
         }
 
@@ -254,7 +257,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             return new DAL.Member
             {
                 MemberId = id,
-                Name = string.Format("Member {0}", id)
+                Name = $"Member {id}"
             };
         }
 
@@ -262,7 +265,8 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         {
             notesController.Request = new HttpRequestMessage();
             notesController.Request.SetConfiguration(new HttpConfiguration());
-            notesController.Request.RequestUri = new Uri(string.Format("{0}{1}", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Notes));
+            notesController.Request.RequestUri = new Uri(
+                $"{ConfigurationManager.AppSettings["BaseApiUri"]}{Resources.Notes}");
         }
 
         #endregion

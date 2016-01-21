@@ -12,20 +12,20 @@ namespace WhiskyClub.DataAccess.Repositories
             var member = GetOne<Member, int>(memberId);
 
             return new Models.Member
-                       {
-                           MemberId = member.MemberId,
-                           Name = member.Name
-                       };
+            {
+                MemberId = member.MemberId,
+                Name = member.Name
+            };
         }
 
         public List<Models.Member> GetAllMembers()
         {
             var items = from member in GetAll<Member>()
                         select new Models.Member
-                                   {
-                                       MemberId = member.MemberId,
-                                       Name = member.Name
-                                   };
+                        {
+                            MemberId = member.MemberId,
+                            Name = member.Name
+                        };
 
             return items.ToList();
         }
@@ -34,20 +34,22 @@ namespace WhiskyClub.DataAccess.Repositories
         {
             try
             {
-                var member = new Member();
-                member.Name = name;
-                member.InsertedDate = DateTime.Now;
-                member.UpdatedDate = DateTime.Now;
+                var member = new Member
+                {
+                    Name = name,
+                    InsertedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now
+                };
 
                 Insert(member);
 
                 CommitChanges();
 
                 return new Models.Member
-                           {
-                               MemberId = member.MemberId,
-                               Name = member.Name
-                           };
+                {
+                    MemberId = member.MemberId,
+                    Name = member.Name
+                };
             }
             catch (Exception)
             {
@@ -74,13 +76,12 @@ namespace WhiskyClub.DataAccess.Repositories
                 return false;
             }
         }
-        
+
         public bool DeleteMember(int memberId)
         {
             try
             {
-                var member = new Member();
-                member.MemberId = memberId;
+                var member = new Member { MemberId = memberId };
 
                 Delete(member);
 

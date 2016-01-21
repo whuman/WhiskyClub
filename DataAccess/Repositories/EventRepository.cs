@@ -49,16 +49,18 @@ namespace WhiskyClub.DataAccess.Repositories
             return items.ToList();
         }
         
-        public Models.Event InsertEvent(int memberId, string description, System.DateTime hostedDate)
+        public Models.Event InsertEvent(int memberId, string description, DateTime hostedDate)
         {
             try
             {
-                var hostedEvent = new Event();
-                hostedEvent.MemberId = memberId;
-                hostedEvent.Description = description;
-                hostedEvent.HostedDate = hostedDate;
-                hostedEvent.InsertedDate = DateTime.Now;
-                hostedEvent.UpdatedDate = DateTime.Now;
+                var hostedEvent = new Event
+                {
+                    MemberId = memberId,
+                    Description = description,
+                    HostedDate = hostedDate,
+                    InsertedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now
+                };
 
                 Insert(hostedEvent);
 
@@ -78,7 +80,7 @@ namespace WhiskyClub.DataAccess.Repositories
             }
         }
 
-        public bool UpdateEvent(int eventId, int memberId, string description, System.DateTime hostedDate)
+        public bool UpdateEvent(int eventId, int memberId, string description, DateTime hostedDate)
         {
             try
             {

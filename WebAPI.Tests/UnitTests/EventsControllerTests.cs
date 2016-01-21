@@ -17,9 +17,9 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
     [TestClass]
     public class EventsControllerTests
     {
-        public IEventRepository EventRepo { get; set; }
-        public IMemberRepository MemberRepo { get; set; }
-        public IWhiskyRepository WhiskyRepo { get; set; }
+        private IEventRepository EventRepo { get; set; }
+        private IMemberRepository MemberRepo { get; set; }
+        private IWhiskyRepository WhiskyRepo { get; set; }
 
         [TestInitialize()]
         public void Initialize()
@@ -48,10 +48,10 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
 
             Assert.IsNotNull(result, "Result was not of the correct type.");
 
-            var eventList = result.Content as IEnumerable<API.Event>;
+            var eventList = result.Content as IList<API.Event>;
 
             Assert.IsNotNull(eventList);
-            Assert.AreEqual(eventList.Count(), mockedEventList.Count, "Returned list item count does not match");
+            Assert.AreEqual(eventList.Count, mockedEventList.Count, "Returned list item count does not match");
             Assert.IsNull(eventList.First().Member, "Event Member is not null.");
             Assert.IsNull(eventList.First().Whiskies, "Event Whiskies list is not null");
         }
@@ -64,7 +64,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             var mockedWhiskyList = GetMockedWhiskyList();
             var eventId = 3;
             var memberId = mockedEventList.First(me => me.EventId == eventId).MemberId; // Fetch the MemberId from the mockedEventList setup
-            
+
             // Arrange
             EventRepo.Stub(repo => repo.GetEvent(eventId))
                      .Return(mockedEventList.First(me => me.EventId == eventId));
@@ -82,7 +82,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             // Assert
             Assert.IsNotNull(result, "Result was not of the correct type.");
 
-            var eventItem = result.Content as API.Event;
+            var eventItem = result.Content;
 
             Assert.IsNotNull(eventItem);
             Assert.AreEqual(eventItem.EventId, eventId);
@@ -127,10 +127,11 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             // Assert
             Assert.IsNotNull(result, "Result was not of the correct type.");
 
-            var hostedEvent = result.Content as API.Event;
+            var hostedEvent = result.Content;
             Assert.IsNotNull(hostedEvent);
             Assert.AreEqual(hostedEvent.EventId, newEvent.EventId); // Test EventId
-            Assert.AreEqual(result.Location.ToString(), string.Format("{0}{1}/{2}", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Events, newEvent.EventId));   // Test Location
+            Assert.AreEqual(result.Location.ToString(),
+                $"{ConfigurationManager.AppSettings["BaseApiUri"]}{Resources.Events}/{newEvent.EventId}");   // Test Location
         }
 
         [TestMethod]
@@ -212,33 +213,21 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
 
         private List<DAL.Event> GetMockedEventList()
         {
-            var events = new List<DAL.Event>();
-
-            events.Add(GetMockedEvent(3, 1));
-            events.Add(GetMockedEvent(2, 2));
-            events.Add(GetMockedEvent(1, 3));
+            var events = new List<DAL.Event> { GetMockedEvent(3, 1), GetMockedEvent(2, 2), GetMockedEvent(1, 3) };
 
             return events;
         }
 
         private List<DAL.Member> GetMockedMemberList()
         {
-            var members = new List<DAL.Member>();
-
-            members.Add(GetMockedMember(3));
-            members.Add(GetMockedMember(2));
-            members.Add(GetMockedMember(1));
+            var members = new List<DAL.Member> { GetMockedMember(3), GetMockedMember(2), GetMockedMember(1) };
 
             return members;
         }
 
         private List<DAL.Whisky> GetMockedWhiskyList()
         {
-            var whiskies = new List<DAL.Whisky>();
-
-            whiskies.Add(GetMockedWhisky(3));
-            whiskies.Add(GetMockedWhisky(2));
-            whiskies.Add(GetMockedWhisky(1));
+            var whiskies = new List<DAL.Whisky> { GetMockedWhisky(3), GetMockedWhisky(2), GetMockedWhisky(1) };
 
             return whiskies;
         }
@@ -246,21 +235,21 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         private DAL.Event GetMockedEvent(int eventId, int memberId)
         {
             return new DAL.Event
-                       {
-                           EventId = eventId,
-                           MemberId = memberId,
-                           Description = string.Format("Event {0}", eventId),
-                           HostedDate = DateTime.Now
-                       };
+            {
+                EventId = eventId,
+                MemberId = memberId,
+                Description = $"Event {eventId}",
+                HostedDate = DateTime.Now
+            };
         }
 
         private DAL.Member GetMockedMember(int id)
         {
             return new DAL.Member
-                       {
-                           MemberId = id,
-                           Name = string.Format("Member {0}", id)
-                       };
+            {
+                MemberId = id,
+                Name = $"Member {id}"
+            };
         }
 
         private DAL.Whisky GetMockedWhisky(int id)
@@ -268,7 +257,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             return new DAL.Whisky
             {
                 WhiskyId = id,
-                Name = string.Format("Whisky {0}", id)
+                Name = $"Whisky {id}"
                 // Don't really need to populate the rest of the fields here
             };
         }
@@ -277,7 +266,8 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         {
             eventsController.Request = new HttpRequestMessage();
             eventsController.Request.SetConfiguration(new HttpConfiguration());
-            eventsController.Request.RequestUri = new Uri(string.Format("{0}{1}", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Events));
+            eventsController.Request.RequestUri = new Uri(
+                $"{ConfigurationManager.AppSettings["BaseApiUri"]}{Resources.Events}");
         }
 
         #endregion

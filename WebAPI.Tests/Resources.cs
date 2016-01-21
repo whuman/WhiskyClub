@@ -1,7 +1,7 @@
 ﻿
 namespace WhiskyClub.WebAPI.Tests
 {
-    internal class Resources
+    internal static class Resources
     {
         public const string Events = "events";
 

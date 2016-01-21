@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using WhiskyClub.DataAccess.Models;
+﻿using System.Collections.Generic;
 
 namespace WhiskyClub.DataAccess.Repositories
 {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using WhiskyClub.DataAccess.Entities;
 
 namespace WhiskyClub.DataAccess.Repositories
@@ -54,13 +53,15 @@ namespace WhiskyClub.DataAccess.Repositories
         {
             try
             {
-                var note = new Note();
-                note.WhiskyId = whiskyId;
-                note.EventId = eventId;
-                note.MemberId = memberId;
-                note.Comment = comment;
-                note.InsertedDate = DateTime.Now;
-                note.UpdatedDate = DateTime.Now;
+                var note = new Note
+                {
+                    WhiskyId = whiskyId,
+                    EventId = eventId,
+                    MemberId = memberId,
+                    Comment = comment,
+                    InsertedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now
+                };
 
                 Insert(note);
 
@@ -107,8 +108,7 @@ namespace WhiskyClub.DataAccess.Repositories
         {
             try
             {
-                var note = new Note();
-                note.NoteId = noteId;
+                var note = new Note { NoteId = noteId };
 
                 Delete(note);
 

@@ -17,8 +17,8 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
     [TestClass]
     public class WhiskiesControllerTests
     {
-        public IWhiskyRepository WhiskyRepo { get; set; }
-        public IEventRepository EventRepo { get; set; }
+        private IWhiskyRepository WhiskyRepo { get; set; }
+        private IEventRepository EventRepo { get; set; }
 
         [TestInitialize()]
         public void Initialize()
@@ -48,7 +48,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
 
             Assert.IsNotNull(result, "Result was not of the correct type.");
 
-            var whiskyList = result.Content as IEnumerable<API.Whisky>;
+            var whiskyList = result.Content;
 
             Assert.IsNotNull(whiskyList);
             Assert.AreEqual(whiskyList.Count(), mockedWhiskyList.Count, "Returned list item count does not match");
@@ -79,10 +79,11 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
 
             Assert.IsNotNull(result, "Result was not of the correct type.");
 
-            var whisky = result.Content as API.Whisky;
+            var whisky = result.Content;
             Assert.IsNotNull(whisky);
             Assert.AreEqual(whisky.WhiskyId, whiskyId);
-            Assert.AreEqual(whisky.ImageUri, string.Format("{0}{1}/{2}/image", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Whiskies, whiskyId));  // Check ImageUri format is correct
+            Assert.AreEqual(whisky.ImageUri,
+                $"{ConfigurationManager.AppSettings["BaseApiUri"]}{Resources.Whiskies}/{whiskyId}/image");  // Check ImageUri format is correct
             Assert.IsNotNull(whisky.Events);    // Check populated events
             Assert.AreEqual(whisky.Events.Count, mockedEventList.Count);
         }
@@ -126,7 +127,8 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             var whisky = result.Content as API.Whisky;
             Assert.IsNotNull(whisky);
             Assert.AreEqual(whisky.WhiskyId, newWhisky.WhiskyId);
-            Assert.AreEqual(result.Location.ToString(), string.Format("{0}{1}/{2}", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Whiskies, newWhisky.WhiskyId));
+            Assert.AreEqual(result.Location.ToString(),
+                $"{ConfigurationManager.AppSettings["BaseApiUri"]}{Resources.Whiskies}/{newWhisky.WhiskyId}");
         }
 
         [TestMethod]
@@ -208,22 +210,14 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
 
         private List<DAL.Whisky> GetMockedWhiskyList()
         {
-            var whiskies = new List<DAL.Whisky>();
-
-            whiskies.Add(GetMockedWhisky(3));
-            whiskies.Add(GetMockedWhisky(2));
-            whiskies.Add(GetMockedWhisky(1));
+            var whiskies = new List<DAL.Whisky> { GetMockedWhisky(3), GetMockedWhisky(2), GetMockedWhisky(1) };
 
             return whiskies;
         }
 
         private List<DAL.Event> GetMockedEventList()
         {
-            var events = new List<DAL.Event>();
-
-            events.Add(GetMockedEvent(4));
-            events.Add(GetMockedEvent(5));
-            events.Add(GetMockedEvent(6));
+            var events = new List<DAL.Event> { GetMockedEvent(4), GetMockedEvent(5), GetMockedEvent(6) };
 
             return events;
         }
@@ -233,7 +227,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             return new DAL.Whisky
             {
                 WhiskyId = id,
-                Name = string.Format("Whisky {0}", id)
+                Name = $"Whisky {id}"
             };
         }
 
@@ -242,7 +236,7 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
             return new DAL.Event
             {
                 EventId = id,
-                Description = string.Format("Event {0}", id)
+                Description = $"Event {id}"
             };
         }
 
@@ -250,7 +244,8 @@ namespace WhiskyClub.WebAPI.Tests.UnitTests
         {
             whiskiesController.Request = new HttpRequestMessage();
             whiskiesController.Request.SetConfiguration(new HttpConfiguration());
-            whiskiesController.Request.RequestUri = new Uri(string.Format("{0}{1}", ConfigurationManager.AppSettings["BaseApiUri"], Resources.Whiskies));
+            whiskiesController.Request.RequestUri = new Uri(
+                $"{ConfigurationManager.AppSettings["BaseApiUri"]}{Resources.Whiskies}");
         }
 
         #endregion        

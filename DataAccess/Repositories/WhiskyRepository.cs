@@ -12,34 +12,34 @@ namespace WhiskyClub.DataAccess.Repositories
             var whisky = GetOne<Whisky, int>(whiskyId);
 
             return new Models.Whisky
-                       {
-                           WhiskyId = whisky.WhiskyId,
-                           Name = whisky.Name,
-                           Brand = whisky.Brand,
-                           Age = whisky.Age,
-                           Country = whisky.Country,
-                           Region = whisky.Region,
-                           Description = whisky.Description,
-                           Price = whisky.Price,
-                           Volume = whisky.Volume
-                       };
+            {
+                WhiskyId = whisky.WhiskyId,
+                Name = whisky.Name,
+                Brand = whisky.Brand,
+                Age = whisky.Age,
+                Country = whisky.Country,
+                Region = whisky.Region,
+                Description = whisky.Description,
+                Price = whisky.Price,
+                Volume = whisky.Volume
+            };
         }
 
         public List<Models.Whisky> GetAllWhiskies()
         {
             var items = from whisky in GetAll<Whisky>()
                         select new Models.Whisky
-                                   {
-                                       WhiskyId = whisky.WhiskyId,
-                                       Name = whisky.Name,
-                                       Brand = whisky.Brand,
-                                       Age = whisky.Age,
-                                       Country = whisky.Country,
-                                       Region = whisky.Region,
-                                       Description = whisky.Description,
-                                       Price = whisky.Price,
-                                       Volume = whisky.Volume
-                                   };
+                        {
+                            WhiskyId = whisky.WhiskyId,
+                            Name = whisky.Name,
+                            Brand = whisky.Brand,
+                            Age = whisky.Age,
+                            Country = whisky.Country,
+                            Region = whisky.Region,
+                            Description = whisky.Description,
+                            Price = whisky.Price,
+                            Volume = whisky.Volume
+                        };
 
             return items.ToList();
         }
@@ -68,34 +68,36 @@ namespace WhiskyClub.DataAccess.Repositories
         {
             try
             {
-                var whisky = new Whisky();
-                whisky.Name = name;
-                whisky.Brand = brand;
-                whisky.Age = age;
-                whisky.Country = country;
-                whisky.Region = region;
-                whisky.Description = description;
-                whisky.Price = price;
-                whisky.Volume = volume;
-                whisky.InsertedDate = DateTime.Now;
-                whisky.UpdatedDate = DateTime.Now;
+                var whisky = new Whisky
+                {
+                    Name = name,
+                    Brand = brand,
+                    Age = age,
+                    Country = country,
+                    Region = region,
+                    Description = description,
+                    Price = price,
+                    Volume = volume,
+                    InsertedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now
+                };
 
                 Insert(whisky);
 
                 CommitChanges();
 
                 return new Models.Whisky
-                           {
-                               WhiskyId = whisky.WhiskyId,
-                               Name = whisky.Name,
-                               Brand = whisky.Brand,
-                               Age = whisky.Age,
-                               Country = whisky.Country,
-                               Region = whisky.Region,
-                               Description = whisky.Description,
-                               Price = whisky.Price,
-                               Volume = whisky.Volume
-                           };
+                {
+                    WhiskyId = whisky.WhiskyId,
+                    Name = whisky.Name,
+                    Brand = whisky.Brand,
+                    Age = whisky.Age,
+                    Country = whisky.Country,
+                    Region = whisky.Region,
+                    Description = whisky.Description,
+                    Price = whisky.Price,
+                    Volume = whisky.Volume
+                };
             }
             catch (Exception)
             {
@@ -134,8 +136,7 @@ namespace WhiskyClub.DataAccess.Repositories
         {
             try
             {
-                var whisky = new Whisky();
-                whisky.WhiskyId = whiskyId;
+                var whisky = new Whisky { WhiskyId = whiskyId };
 
                 Delete(whisky);
 
@@ -155,7 +156,7 @@ namespace WhiskyClub.DataAccess.Repositories
 
             return whisky.Image;
         }
-        
+
         public bool UpdateWhiskyImage(int whiskyId, byte[] image)
         {
             try
@@ -180,10 +181,12 @@ namespace WhiskyClub.DataAccess.Repositories
         {
             try
             {
-                var eventWhisky = new EventWhisky();
-                eventWhisky.EventId = eventId;
-                eventWhisky.WhiskyId = whiskyId;
-                eventWhisky.InsertedDate = DateTime.Now;
+                var eventWhisky = new EventWhisky
+                {
+                    EventId = eventId,
+                    WhiskyId = whiskyId,
+                    InsertedDate = DateTime.Now
+                };
 
                 Insert(eventWhisky);
 
